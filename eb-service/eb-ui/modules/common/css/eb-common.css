@@ -1,0 +1,546 @@
+[v-cloak] {
+    display: none;
+}
+body{
+     background-color:transparent;
+     padding: 0px 80px 0px 80px;
+    font-family: "Microsoft YaHei";
+ }
+label{
+    font-weight: 100;
+}
+textarea{
+    resize:none;
+}
+
+input:focus::-webkit-input-placeholder{
+    color: transparent;
+}
+input:focus:-moz-placeholder {
+    color: transparent;
+}
+
+input:focus::-moz-placeholder {
+    color: transparent;
+}
+input:focus:-ms-input-placeholder {
+    color: transparent;
+}
+
+.jqGridDiv{
+    clear: both;
+    background: url("../img/jqGridBg.png") ;
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+}
+
+.jqGridPager{
+    color: #ffffff;
+    font-size: 14px;
+
+}
+
+.jqGridDiv2{
+    padding: 25px;
+}
+.jqGridDiv3{
+    padding: 5px;
+}
+
+.eb-btn-search{
+    background-color:transparent;
+    background: url("../img/search.png") no-repeat center;
+    background-size: 100% 100%;
+    border: 0px;
+    width: 120px;
+    height: 40px;
+    color: #00ffff;
+    font-size: 16px;
+    margin-left: 40px;
+}
+
+.eb-layer-btn{
+    background-color:transparent;
+    background: url("../img/layer-btn.png") no-repeat center;
+    border: 0px;
+    width: 81px;
+    height: 28px;
+    color: #00ffff;
+    font-size: 12px;
+}
+
+
+.eb-btn-operation{
+    background-color:transparent;
+    background: url("../img/search.png") no-repeat center;
+    border: 0px;
+    width: 120px;
+    height: 40px;
+    color: #00ffff;
+    font-size: 16px;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+.eb-select{
+   /*background-color:transparent;*/
+    background: #01304d url("../img/select.png") no-repeat center;
+    width: 150px;
+    height: 40px;
+    color: #eeeeee;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    line-height: 40px;
+    padding-right: 30px;
+    appearance:none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-left: 20px;
+}
+/* 清除IE浏览器的下拉箭头样式*/
+select::-ms-expand {
+    display: none;
+}
+
+.eb-select-200{
+    background: #01304d url("../img/select200.png") no-repeat center;
+    width: 200px;
+    height: 40px;
+    color: #eeeeee;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    line-height: 40px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-left: 20px;
+    padding-right: 30px;
+}
+
+.eb-select-300{
+    background: #01304d url("../img/select200.png") no-repeat center;
+    width: 300px;
+    height: 40px;
+    color: #eeeeee;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    line-height: 40px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-left: 20px;
+    padding-right: 30px;
+}
+
+option{
+    background-color: #01304d;
+    color: #eeeeee;
+    font-size: 16px;
+    height: 40px;
+    line-height: 40px;
+
+}
+
+
+
+.eb-label-text{
+    color: #ffffff;
+    font-size: 16px;
+    height: 40px;
+    line-height: 40px;
+    border: 0px;
+    padding-left: 30px;
+    padding-right: 10px;
+}
+
+.eb-layer-label-text{
+    color: #ffffff;
+    font-size: 16px;
+    height: 40px;
+    line-height: 40px;
+    border: 0px;
+}
+
+
+.eb-date-label-text{
+    color: white;
+    font-size: 16px;
+    height: 40px;
+    line-height: 40px;
+    border: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+}
+
+
+.eb-input{
+    background-color:transparent;
+    background: url("../img/input200.png") no-repeat center;
+    background-size: 100%;
+    border: 0px;
+    width: 200px;
+    height: 40px;
+    color: white;
+    padding-left: 10px;
+}
+
+.eb-input-300{
+    background-color:transparent;
+    background: url("../img/input300.png") no-repeat center;
+    background-size: 100%;
+    border: 0px;
+    width: 300px;
+    height: 40px;
+    color: white;
+    padding-left: 10px;
+}
+
+.eb-input:focus {
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
+.eb-input::-moz-placeholder {
+    color: #eeeeee;
+    opacity: 1;
+}
+.eb-input::-ms-input-placeholder {
+    color: #eeeeee;
+    text-align: center;
+}
+.eb-input::-webkit-input-placeholder {
+    color: #eeeeee;
+    text-align: center;
+}
+.eb-input::-ms-expand {
+    background-color: transparent;
+    border: 0;
+}
+
+/*修改grid标题的字体大小*/
+.ui-jqgrid .ui-jqgrid-title{
+
+}
+/*修改列名的字体大小*/
+.ui-jqgrid-sortable {
+    color: #ffffff;
+    text-align: center;
+}
+
+.ui-jqgrid td.jqgrid-rownum{
+    color: #00fbff;
+    font-size: 18px;
+}
+
+/*修改表格内容字体*/
+.ui-jqgrid tr {
+    color: #ffffff;
+    font-size:16px;
+    line-height: 26px;
+    background-color: rgba(34,84,111,0.8);
+}
+
+.ui-jqgrid tr.jqgrow td {
+    font-size:16px;
+    line-height: 26px;
+}
+
+
+.ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column{
+    background-color: #35a5cb;
+    font-size: 16px;
+    height: 50px;
+}
+
+.table>tbody>tr.active>td,
+.table>tbody>tr.active>th,
+.table>tbody>tr>td.active,
+.table>tbody>tr>th.active,
+.table>tfoot>tr.active>td,
+.table>tfoot>tr.active>th,
+.table>tfoot>tr>td.active,
+.table>tfoot>tr>th.active,
+.table>thead>tr.active>td,
+.table>thead>tr.active>th,
+.table>thead>tr>td.active,
+.table>thead>tr>th.active {
+    background-color: #2f7398;
+}
+
+.table>tbody>tr.success>td,
+.table>tbody>tr.success>th,
+.table>tbody>tr>td.success,
+.table>tbody>tr>th.success,
+.table>tfoot>tr.success>td,
+.table>tfoot>tr.success>th,
+.table>tfoot>tr>td.success,
+.table>tfoot>tr>th.success,
+.table>thead>tr.success>td,
+.table>thead>tr.success>th,
+.table>thead>tr>td.success,
+.table>thead>tr>th.success{
+    background-color: #2f7398;
+}
+
+
+.table>tbody>tr>td.active
+{
+    background-color:transparent;
+}
+
+
+.table-bordered{
+    border: none;
+}
+
+
+.ui-jqgrid .ui-jqgrid-pager, .ui-jqgrid .ui-jqgrid-toppager{
+    border-top:1px solid #35a5cb ;
+}
+
+.ui-jqgrid{
+    border: 1px solid #35a5cb ;
+}
+
+.table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th{
+    border: 1px solid #35a5cb ;
+}
+
+.ui-jqgrid .ui-jqgrid-htable .ui-th-div {
+    height:30px;
+    margin-top:5px;
+}
+
+.form-inline .form-group {
+    display: inline-block;
+    padding: 5px;
+    vertical-align: middle;
+}
+.page-content{
+    position: relative;
+}
+
+.eb-layer{
+    overflow-y: auto;
+    display: none;
+    width: 100%;
+    height: 100%;
+    background: url("../img/layerBg.png") ;
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+    padding: 0px 20px 0px 0px;
+}
+
+.form-horizontal .control-label{
+    padding-top: 0px;
+}
+
+
+.span-checkbox{
+    color: #eeeeee;
+    font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+    margin-right: 20px;
+}
+
+input[type="checkbox"] {
+    -webkit-appearance: none;  /*清除复选框默认样式*/
+    appearance:none;
+    -moz-appearance: none;
+    background: url(../img/no-check.png);   /*复选框的背景图，就是上图*/
+    height: 15px;   /*高度*/
+    vertical-align: middle;
+    width: 15px;
+    margin-bottom: 7px;
+    padding-right: 3px;
+}
+input[type="checkbox"]::-ms-clear { display: none;}
+input[type="checkbox"]::-ms-reveal { display: none;}
+
+.span-checkbox>input[type="checkbox"]:checked {
+    background: url(../img/check.png);
+}
+
+.eb-layer-title{
+    text-align: center;
+    font-size: 26px;
+    height: 68px;
+    line-height: 68px;
+    color:#00ffff;
+    background: url("../img/titleHead.png") ;
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+    margin-bottom: 24px;
+}
+
+.layer-reso-bg{
+    height: 250px;
+    background: url("../img/layer-reso-bg.png") ;
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+}
+
+.layer-reso-table{
+    height: auto;
+    width: 100%;
+}
+
+.layer-reso-table>thead{
+    height: 40px;
+    line-height: 40px;
+    background: url("../img/layer-table-head-bg.png");
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+    color: #47fcff;
+    font-size: 14px;
+}
+
+.layer-reso-table>thead>tr>th{
+    padding-left: 24px;
+}
+
+.layer-reso-table>tbody>tr{
+    border-bottom: 1px solid rgba(1,158,255,0.2);
+    color: #eeeeee;
+    font-size: 12px;
+    height: 34px;
+    line-height: 34px;
+}
+
+.layer-reso-type>td{
+    padding-left: 24px;
+}
+
+.layer-reso-name>td{
+    padding-left: 48px;
+}
+
+.layer-reso-bg{
+    display: block;
+    overflow-x: auto;
+}
+.layer-reso-name:hover{
+   background-color: #2f7398;
+}
+.mg-h-30{
+    margin: 30px auto;
+}
+.eb-input-text{
+    background-color:transparent;
+    background: url("../img/input200.png") no-repeat center;
+    background-size: 100% 100%;
+    border: 0px;
+    height: 40px;
+    color: white;
+    padding-left: 10px;
+}
+.e-required{
+    color: red;
+    margin: 5px;
+}
+
+input[type='radio']{
+    -webkit-appearance: none;
+    background: url(../img/no-check.png);
+    height: 15px;
+    vertical-align: middle;
+    width: 15px;
+    margin-bottom: 7px;
+    padding-right: 3px;
+}
+
+input[type="radio"]::-ms-clear { display: none;}
+input[type="radio"]::-ms-reveal { display: none;}
+
+input[type="radio"]:checked {
+    background: url(../img/check.png);
+}
+input[type="checkbox"]::-ms-clear { display: none;}
+input[type="checkbox"]::-ms-reveal { display: none;}
+
+input[type="checkbox"]:checked {
+    background: url(../img/check.png);
+}
+
+
+/**==================== 优化滚动条 ======================*/
+::-webkit-scrollbar {
+    /*设置滚动条的宽，高度自适应即可*/
+    width: 14px;
+    height: auto;
+}
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb {
+    /*让外层轨道和指示块显示圆角，以及透明显示*/
+    border-radius: 10px;
+    border: 5px solid transparent;
+}
+
+::-webkit-scrollbar-track {
+    /*设置外层轨道样式*/
+    box-shadow: 1px 1px 5px  #47fcff inset;
+}
+
+::-webkit-scrollbar-thumb {
+    /*设置轨道内滑动指示块的大小以及呈现样式*/
+    min-height: 20px;
+    background-clip: content-box;
+    box-shadow:0 0 5px  #47fcff inset;
+}
+
+::-webkit-scrollbar-corner {
+    /*边角透明显示*/
+    background: transparent;
+}
+/**==================== 优化滚动条 ======================*/
+.red-alarm{ 
+	background:red; 
+	color:red;
+ 	display: block; 
+    border-radius: 50%; 
+    height: 15px; 
+    width: 15px; 
+    margin: 0; 
+    float:right;
+}
+.green-alarm{ 
+	background:green; 
+	color:green;
+ 	display: block; 
+    border-radius: 50%; 
+    height: 15px; 
+    width: 15px; 
+    margin: 0; 
+    float:right;
+}
+.pause-button { /* 按钮美化 */
+	width: 80px; /* 宽度 */
+	height: 30px; /* 高度 */
+	border-width: 0px; /* 边框宽度 */
+	border-radius: 3px; /* 边框半径 */
+	background: #1E90FF; /* 背景颜色 */
+	cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+	outline: none; /* 不显示轮廓线 */
+	font-family: Microsoft YaHei; /* 设置字体 */
+	color: white; /* 字体颜色 */
+	font-size: 17px; /* 字体大小 */
+}
+.disable-button{
+	width: 80px; /* 宽度 */
+	height: 30px; /* 高度 */
+	border-width: 0px; /* 边框宽度 */
+	border-radius: 3px; /* 边框半径 */
+	background: #666666; /* 背景颜色 */
+	outline: none; /* 不显示轮廓线 */
+	font-family: Microsoft YaHei; /* 设置字体 */
+	color: white;  /*字体颜色 */
+	font-size: 17px; /* 字体大小 */
+    opacity:0.5;
+    pointer-events:none;
+
+}

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+<title>应急广播平台</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet" href="../../plugins/bootstrap-treeview/css/bootstrap-treeview.min.css">
+<link href="../common/css/eb-common.css" rel="stylesheet">
+<link href="css/planMath.css" rel="stylesheet">
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" >
+	<div class="main-content">
+		<div class="page-content" >
+
+			<div style="padding-bottom: 60px;">
+				<div class="pull-left">
+					<button v-if="permissions['sys:plan:add']" class="eb-btn-operation"  @click="add()"/><i class="fa fa-save"></i>&nbsp;新增预案</button>
+				</div>
+
+				<div class="pull-right">
+					<form id="form-search-curve" class="form-inline" action="javascript:void(0);" >
+						<div class="form-group">
+							<div class="input-group input-group-sm">
+								<label class="control-label eb-label-text">预案名称</label>
+								<input  class="input-date eb-input"  v-model="req.planName"/>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="input-group input-group-sm styled-select" >
+								<label class="control-label eb-label-text">事件级别</label>
+								<select  class="eb-select" v-model="req.severity">
+									<option value="" >全部</option>
+									<option :value="severity.dictKey" v-for="severity in severityList" >{{severity.dictValue}}</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="input-group input-group-sm">
+								<button class="eb-btn-search" type="button" onclick="reload()">
+									<i class="fa fa-search"></i> &nbsp; 查 询
+								</button>
+							</div>
+						</div>
+
+					</form>
+				</div>
+			</div>
+			<div class="jqGridDiv">
+				<div class="jqGridDiv2" >
+					<table id="jqGrid"></table>
+					<div id="jqGridPager" class="jqGridPager"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div id="planMathLayer"  class="eb-layer" style="height: auto;">
+		<div class="eb-layer-title">
+				新增预案
+		</div>
+		<form class="form-horizontal planMathForm"  method="post" >
+				<div class="row">
+					<div class="col-md-2">
+						<div class="form-group">
+							<label class="col-sm-12 control-label eb-layer-label-text"><span class="e-required"> *</span>预案名称</label>
+						</div>
+					</div>
+
+					<div class="col-md-3">
+						<div class="form-group">
+							<div class="col-sm-5">
+								<input  class="eb-input-300"  v-model="sysPlanMath.planName" placeholder="支持中文、英文、数字且不超过10个字符" maxlength="10"/>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3">
+						<div class="form-group">
+							<label class="col-sm-4 control-label eb-layer-label-text">事件类型</label>
+							<div class="col-sm-5">
+								<select  class="eb-select-200" v-model="sysPlanMath.eventType">
+									<option value="00000" >所有事件</option>
+									<option :value="eventType.eventCode" v-for="eventType in eventTypeList" >{{eventType.eventDesc}}</option>
+								</select>
+
+								<!--<div id="area_tree_div">-->
+									<!--<input type="text" id="area_input" name="area_input" class="eb-input"  />-->
+									<!--<div id="treeview" style="display: none;position: absolute;z-index: 1000;width: 200px;height: 350px;overflow: auto;" ></div>-->
+								<!--</div>-->
+
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="col-sm-5 control-label eb-layer-label-text"><span class="e-required"> *</span>处理流程</label>
+							<div class="col-sm-5">
+								<select  class="eb-select-200" v-model="sysPlanMath.flowType">
+									<option value="" >请选择</option>
+									<option :value="planFlow.dictKey" v-for="planFlow in planFlowList" >{{planFlow.dictValue}}</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				 <div class="row">
+				    <div class="col-md-2">
+						<div class="form-group">
+							<label class="col-sm-12 control-label eb-layer-label-text">预警信息源</label>
+						</div>
+					</div>
+					<div class="col-md-10">
+						<div class="form-group">
+							<div class="col-sm-8">
+								<select  class="eb-select-200" v-model="sysPlanMath.srcEbrId">
+									<option value="" >全部</option>
+									<option :value="ebrView.ebrId" v-for="ebrView in ebrViewList" >{{ebrView.ebrName}}</option>
+								</select>
+							</div>
+						</div>
+					 </div>
+				</div>
+				<div class="row">
+					<div class="col-md-2">
+						<div class="form-group">
+							<label class="col-sm-12 control-label eb-layer-label-text">事件级别</label>
+						</div>
+					</div>
+					<div class="col-md-10">
+						<div class="form-group">
+							<div class="col-sm-12">
+								<span v-for="severity in severityList" class="span-checkbox">
+									<input  type="checkbox" :value="severity.dictKey"  name="severityCheckbox"/>
+									<span class="span-checkbox-name">
+										{{severity.dictValue}}
+									</span>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2">
+						<div class="form-group">
+							<label class="col-sm-12 control-label eb-layer-label-text">覆盖区域</label>
+						</div>
+					</div>
+					<div class="col-md-10">
+						<div class="form-group">
+							<div class="col-sm-12">
+								<span class="span-checkbox">
+									<input  type="checkbox"  name="allArea" id="allArea" v-bind:value="topArea.areaCode" checked @click="areaToggle()"/>
+									<span class="span-checkbox-name">
+												{{topArea.areaName}}
+									</span>
+										<a @click="areaToggle()">详情&nbsp;<i class="fa fa-angle-double-down" v-if="!areaDiv"></i><i class="fa fa-angle-double-up" v-if="areaDiv"></i></a>
+									</span>
+								</span>
+							<div v-show="areaDiv">
+								<span class="span-checkbox" v-for="area in areaList">
+									<input  type="checkbox"  name="targetArea" v-bind:value="area.areaCode" v-bind:areaName="area.areaName"/>
+									<span class="span-checkbox-name">
+											{{area.areaName}}
+									</span>
+								</span>
+							</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-2">
+						<div class="form-group">
+							<label class="col-sm-12 control-label eb-layer-label-text"><span class="e-required"> *</span>使用资源</label>
+						</div>
+					</div>
+					<div class="col-md-10">
+						<div class="col-md-5">
+							<div class="form-group" style="padding-right: 60px;">
+								<div class="layer-reso-bg" >
+									<table class="layer-reso-table" id="select-table">
+										<thead>
+											<tr>
+												<th colspan="2">可选资源</th>
+											</tr>
+										</thead>
+										<tbody v-for="reso in resoList">
+											<tr class="layer-reso-type">
+												<td>{{reso.ebrTypeName}}</td><td width="20%"></td>
+											</tr>
+											<tr class="layer-reso-name" v-for="ebrInfo in reso.ebrInfoList" @click="changCheck(['reso'+ebrInfo.ebrId])" v-bind:id="['reso'+ebrInfo.ebrId]">
+												<td>{{ebrInfo.ebrName}}</td><td width="25%"><img src="" v-bind:ebrType="reso.ebrType" v-bind:ebrId="ebrInfo.ebrId" v-bind:ebrName="ebrInfo.ebrName"/></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group" style="margin-top: 80px;margin-left: -25px;">
+								<ul>
+									<li>
+										<button class="eb-layer-btn" type="button" @click="selectAll()">
+											选择全部&nbsp;
+											<i class="fa fa-angle-double-right"></i>
+										</button>
+									</li>
+									<li>
+										<button class="eb-layer-btn" type="button" @click="selectSome()">
+											选择&nbsp;
+											<i class="fa fa-angle-right"></i>
+										</button>
+									</li>
+									<li>
+										<button class="eb-layer-btn" type="button" @click="cancelSome()">
+											<i class="fa fa-angle-left"></i>&nbsp;取消
+										</button>
+									</li>
+									<li>
+										<button class="eb-layer-btn" type="button" @click="cancelAll()">
+											<i class="fa fa-angle-double-left"></i>&nbsp;取消全选
+										</button>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="col-md-5">
+							<div class="form-group" style="padding-right: 60px;">
+								<div class="layer-reso-bg" >
+									<table class="layer-reso-table" id="choose-table">
+										<thead>
+										<tr>
+											<th colspan="2">已选资源</th>
+										</tr>
+										</thead>
+										<tbody >
+										<tr class="layer-reso-name" v-for="reso in sysPlanMath.refList"   @click="changCheck(['choose'+reso.resoCode])" v-bind:id="['choose'+reso.resoCode]">
+											<td style="padding-left: 24px;">{{reso.resoName}}</td><td width="25%"><img src=""  v-bind:ebrType="reso.resoType" v-bind:resoCode="reso.resoCode" v-bind:ebrName="reso.resoName"/></td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="col-md-2">
+						<div class="form-group">
+							<label class="col-sm-12 control-label eb-layer-label-text"></label>
+						</div>
+					</div>
+					<div class="col-md-9" style="text-align: center;">
+						<button class="eb-btn-search" type="button" @click="closeLayer()">
+							<i class="fa fa-close"></i> &nbsp; 取消
+						</button>
+
+						<button class="eb-btn-search" type="button" @click="saveOrUpdate()">
+							<i class="fa fa-check"></i> &nbsp; 确认
+						</button>
+					</div>
+				</div>
+		</form>
+	</div>
+</div>
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../plugins/duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+<script src="../../plugins/bootstrap-treeview/js/bootstrap-treeview.js"></script>
+<script src="../../js/common.js"></script>
+<script src="js/planMath.js"></script>
+</body>
+</html>

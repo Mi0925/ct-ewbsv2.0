@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+<title>应急广播平台-平台资源</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link href="../common/css/eb-common.css" rel="stylesheet">
+<link href="../common/css/eb-right-float.css" rel="stylesheet">
+<style>
+</style>
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" >
+	<div class="main-content" >
+		<div class="page-content"  >
+
+			<!-- 详情浮动框  -->
+			<div class="float-div" id="float-div">
+				<div class="right-float-div" >
+					<div class="left-sidebar" onclick="leftSidebarClick()"></div>
+
+					<div v-if="ebrInfo != null" class="detail-content">
+						<div class="detail-head">
+							<div class="detail-title">
+								<div class="title-span" v-bind:title="ebrInfo.ebrAsName">
+									<i class="fa fa-home"></i>
+									{{ebrInfo.ebrAsName}}
+								</div>
+							</div>
+						</div>
+						<div class="detail-body">
+							<table>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 资源编码</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											{{ebrInfo.ebrAsId}}
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 基本信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text">
+												<div class="detail-text-label">平台类型：</div>
+												<div class="detail-text-content">{{ebrInfo.subResType | getEnumName('SUB_RES_TYPE_DICT')}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">资源状态：</div>
+												<div class="detail-text-content">{{ebrInfo.adapterState | getEnumName('RES_STATUS_DICT')}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">平台URL：</div>
+												<div class="detail-text-content" :title="ebrInfo.url">{{ebrInfo.url | filterFun(20)}}</div>
+											</div>
+										<!--	<div class="sub-detail-text">
+												<div class="detail-text-label">平台级别：</div>
+												<div class="detail-text-content">{{ebrInfo.platLevel | getEnumName('RES_LEVEL_DICT')}}</div>
+											</div>-->
+											<div class="sub-detail-text">
+												<div class="detail-text-label">关联平台名称：</div>
+												<div class="detail-text-content">{{ebrInfo.ebrpsId | getPlatformName}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">经度：</div>
+												<div class="detail-text-content">{{ebrInfo.longitude}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">纬度：</div>
+												<div class="detail-text-content">{{ebrInfo.latitude}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">信息同步：</div>
+												<div class="detail-text-content" v-if="ebrInfo.syncFlag == 1">未同步</div>
+												<div class="detail-text-content" v-if="ebrInfo.syncFlag == 2">已同步</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">状态同步：</div>
+												<div class="detail-text-content" v-if="ebrInfo.statusSyncFlag == 1">未同步</div>
+												<div class="detail-text-content" v-if="ebrInfo.statusSyncFlag == 2">已同步</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">更新时间：</div>
+												<div class="detail-text-content">{{ebrInfo.updateTime}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">创建时间：</div>
+												<div class="detail-text-content">{{ebrInfo.createTime}}</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+
+							</table>
+
+						</div>
+					</div>
+				</div>
+				<i class="fa fa-angle-double-right" style="width: 60px;height: 120px;"></i>
+			</div>
+			<!-- 详情浮动框  end-->
+			<div class="pull-left">
+					<div style="width: 100px;height: 20px;">声光报警器:<div id="alarm_div" class="green-alarm" data-type="02"></div></div>
+			</div>
+			
+			<div class="pull-right" id="searchDiv">
+				<form id="form-search-curve" class="form-inline"  action="javascript:void(0);" >
+					<div class="form-group">
+						<div class="input-group input-group-sm styled-select" >
+							<label class="control-label eb-label-text">适配器名称</label>
+							<input  class="input-date eb-input" v-model="req.ebrAsName"/>
+						</div>
+					</div>
+
+					<!--<div class="form-group">
+						<div class="input-group input-group-sm styled-select" >
+							<label class="control-label eb-label-text">资源编码</label>
+							<input  class="input-date eb-input" v-model="req.ebrAsId"/>
+						</div>
+					</div>-->
+					<div class="form-group">
+						<div class="input-group input-group-sm styled-select" >
+							<label class="control-label eb-label-text">资源状态</label>
+							<select  class="eb-select" v-model="req.adapterState">
+								<option value="" > 全部</option>
+								<div v-if="pageEnum != null">
+									<option v-for="p in pageEnum" v-if="p.dictGroupCode == 'RES_STATUS_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+								</div>
+							</select>
+						</div>
+					</div>
+					<!--<div class="form-group">
+						<div class="input-group input-group-sm styled-select" >
+							<label class="control-label eb-label-text">平台级别</label>
+							<select  class="eb-select" v-model="req.platLevel">
+								<option value="" > 全部</option>
+								<div v-if="pageEnum != null">
+									<option v-for="p in pageEnum" v-if="p.dictGroupCode == 'RES_LEVEL_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+								</div>
+							</select>
+						</div>
+					</div>-->
+					<div class="form-group">
+						<button class="eb-btn-search" type="button" @click="reload">
+							<i class="fa fa-search"></i> &nbsp; 查 询
+						</button>
+					</div>
+				</form>
+
+			</div>
+
+
+				<div class="jqGridDiv">
+					<div class="jqGridDiv2" >
+						<table id="jqGrid"></table>
+						<div id="jqGridPager" class="jqGridPager"></div>
+					</div>
+				</div>
+
+		</div>
+
+
+	</div>
+<audio src="/audio/alarm_audio.mp3" preload id="alarm_audio" loop="loop" hidden>
+</div>
+
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../../js/jquery.timers-1.2.js"></script>
+<script src="js/adapterList.js"></script>
+<script src="../../js/alarm.js"></script>
+</body>
+</html>

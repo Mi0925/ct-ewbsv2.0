@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.reso.main.ebr.mapper.EbrAdapterMapper">
+
+    <select id="getListWithXml" resultType="cn.comtom.domain.reso.ebr.info.EbrAdapterInfo"
+            parameterType="cn.comtom.domain.reso.ebr.request.EbrAdapterPageRequest">
+        select * from (
+        select t.*,p.psEbrName as psEbrName from bc_ebr_adapter t
+        left join bc_ebr_platform p on p.psEbrId = t.ebrpsId
+        where 1=1
+        <if test="ebrAsName != null and ebrAsName != ''">
+            and t.ebrAsName like CONCAT('%',#{ebrAsName}, '%')
+        </if>
+        <if test="ebrpsId != null and ebrpsId != ''">
+            and t.ebrpsId = #{ebrpsId}
+        </if>
+        <if test="syncFlag != null and syncFlag != ''">
+            and t.syncFlag = #{syncFlag}
+        </if>
+        <if test="statusSyncFlag != null and statusSyncFlag != ''">
+            and t.statusSyncFlag = #{statusSyncFlag}
+        </if>
+        <if test="adapterState != null and adapterState != ''">
+            and t.adapterState = #{adapterState}
+        </if>
+        ) t1 where 1=1
+
+        <if test="parentAreaCode != null and parentAreaCode != ''">
+            and exists (select 1 from sys_region_area a where a.parentAreaCode like CONCAT(#{parentAreaCode}, '%') and
+            a.areaCode = t1.areaCode
+            UNION ALL
+            SELECT
+            1
+            FROM
+            sys_region_area a
+            WHERE
+            a.areaCode =#{parentAreaCode}
+            AND a.areaCode = t1.areaCode
+            )
+        </if>
+        <if test="childAreaCode != null and childAreaCode != ''">
+            and t1.areaCode = (select r.parentAreaCode from sys_region r where r.areaCode=#{childAreaCode} )
+        </if>
+
+    </select>
+
+
+    <select id="findListByAdapterIds" resultType="cn.comtom.domain.reso.ebr.info.EbrAdapterInfo"
+            parameterType="java.util.List">
+        select * from bc_ebr_adapter where ebrAsId in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+</mapper>

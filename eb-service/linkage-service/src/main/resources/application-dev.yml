@@ -1,0 +1,59 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://admin:123456@127.0.0.1:9999/eureka/
+spring:
+  servlet:
+    multipart:
+      location: /data
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    virtual-host: eb
+    username: comtom
+    password: comtom
+  redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 1
+      pool:
+        max-total: 200
+        maxTotal: 200
+        maxWaitMillis: 10000
+        testOnBorrow: true
+        testOnReturn: true
+        timeout: 100
+      password: 123456
+file:
+  ftp:
+      hostname: 127.0.0.1
+      port: 21
+      username: comtom
+      password: comtom
+fdfs:
+  connect-timeout: 1501  #连接超时时间
+  so-timeout: 601       #读取时间
+  thumb-image:         #生成缩略图参数
+    width: 150
+    height: 150
+  tracker-list: 192.168.7.200:22122
+  pool:
+    max-total: 1000
+    max-wait-millis: 10000
+    min-idle-per-key: 10
+    max-idle-per-key: 20
+    max-total-per-key: 50
+externalData: 
+  textInsert: 
+    baseUrl: http://192.168.111.103
+    username: admin
+    password: admin
+signature:
+  service:
+    gurl: /sign/getSignByFile
+    vurl: /sign/verifySignByFile
+baidu:
+  tts:
+      appid: 15977493
+      apikey: QzfRhA7iCpGiqQVwluYOyjVX
+      secretkey: ziNPW5GtFUM1CaXGbUWEmImVwwYfhh4j

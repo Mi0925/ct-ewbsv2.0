@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+<title>应急广播平台-文件管理</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+	<link href="../common/css/eb-common.css" rel="stylesheet">
+	<link href="../common/css/eb-right-float.css" rel="stylesheet">
+	<link href="../resource/css/fileLib.css" rel="stylesheet">
+	<link href="../../plugins/dropzone/dropzone.css" rel="stylesheet">
+	<link href="../../plugins/dropzone/basic.css" rel="stylesheet">
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" >
+	<div class="main-content" >
+		<div class="page-content"  >
+
+			<!-- 详情浮动框  -->
+			<div class="float-div" id="float-div">
+				<div class="right-float-div" >
+					<div class="left-sidebar" onclick="leftSidebarClick()"></div>
+
+					<div v-if="fileInfo != null" class="detail-content">
+						<div class="detail-head">
+							<div class="detail-title">
+								<div class="title-span" v-bind:title="fileInfo.fileName">
+									<i class="fa fa-home"></i>
+									{{fileInfo.originName}}
+								</div>
+							</div>
+							<div class="detail-btn-group">
+								<div v-if="permissions['res:file:download']" type="button" class="detail-btn" @click="downFile(fileInfo)">
+									<i class="fa fa-download"></i>
+									<span>
+											文件下载
+									</span>
+								</div>
+							</div>
+
+						</div>
+						<div class="detail-body">
+							<table>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 文件ID</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											{{fileInfo.id}}
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 基本信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text">
+												<div class="detail-text-label">文件类型：</div>
+												<div class="detail-text-content" v-if="fileInfo.fileType ==1"> 媒体文件</div>
+												<div class="detail-text-content" v-if="fileInfo.fileType ==2"> 文本文件</div>
+											</div>
+											<div class="sub-detail-text" >
+												<div class="detail-text-label">文件名后缀：</div>
+												<div class="detail-text-content">{{fileInfo.fileExt}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">MD5：</div>
+												<div class="detail-text-content">{{fileInfo.md5Code}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">文件大小：</div>
+												<div class="detail-text-content">{{fileInfo.byteSize | filterFileSize}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">文件夹名称：</div>
+												<div class="detail-text-content" >{{fileInfo.libName}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="fileInfo.fileType == 2">
+												<div class="detail-text-label">文本广播内容：</div>
+												<div class="detail-text-content" :title="fileInfo.fileText" >{{fileInfo.fileText | filterFun(50) }}</div>
+											</div>
+											<div class="sub-detail-text" v-if="fileInfo.fileDesc != null && fileInfo.fileDesc != '' ">
+												<div class="detail-text-label">文件描述：</div>
+												<div class="detail-text-content" :title="fileInfo.fileDesc" >{{fileInfo.fileDesc | filterFun(50) }}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">创建人：</div>
+												<div class="detail-text-content">{{fileInfo.createUser}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">创建时间：</div>
+												<div class="detail-text-content">{{fileInfo.createDate}}</div>
+											</div>
+
+
+
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 审核信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text">
+												<div class="detail-text-label">审核状态：</div>
+												<div class="detail-text-content" v-if="fileInfo.auditState ==1"> 审核通过</div>
+												<div class="detail-text-content" v-if="fileInfo.auditState ==2"> 审核不通过</div>
+												<div class="detail-text-content" v-if="fileInfo.auditState ==0"> 未审核</div>
+											</div>
+											<div class="sub-detail-text" v-if="fileInfo.auditUser != null && fileInfo.auditUser != ''">
+												<div class="detail-text-label">审核人：</div>
+												<div class="detail-text-content">{{fileInfo.auditUser}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="fileInfo.auditComment != null && fileInfo.auditComment != ''">
+												<div class="detail-text-label">审核意见：</div>
+												<div class="detail-text-content">{{fileInfo.auditComment | filterFun(50)}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="fileInfo.auditDate != null && fileInfo.auditDate != ''">
+												<div class="detail-text-label">审核时间：</div>
+												<div class="detail-text-content">{{fileInfo.auditDate}}</div>
+											</div>
+
+										</div>
+									</td>
+								</tr>
+
+							</table>
+
+						</div>
+					</div>
+				</div>
+				<i class="fa fa-angle-double-right" style="width: 60px;height: 120px;"></i>
+			</div>
+			<!-- 详情浮动框  end-->
+			
+			<div class="pull-right" id="searchDiv" style="width: 100%">
+				<div class="file_Lib_Nav">
+					<span class="parent_lib_name" onclick="parentLibNavClick('0',this)"> <i class="fa fa-home"></i>&nbsp;文件管理</span>
+				</div>
+
+				<div style="float: right;width: 100%">
+					<div class="btn_group">
+						<button v-if="permissions['res:filedir:create']" class="eb-btn-opt" type="button" onclick="showLibAddLayer()">
+							创建文件夹
+						</button>
+						<button v-if="permissions['res:file:upload']" class="eb-btn-opt" type="button" @click="uploadFiles">
+							 上传
+						</button>
+					</div>
+					<form id="form-search-curve" class="form-inline" style="float: right"  action="javascript:void(0);" >
+						<div class="form-group">
+							<div class="input-group input-group-sm styled-select" >
+								<label class="control-label eb-label-text">名称</label>
+								<input  class="input-date eb-input" v-model="req.libName"/>
+							</div>
+						</div>
+						<!--<div class="form-group">-->
+							<!--<div class="input-group input-group-sm styled-select" >-->
+								<!--<label class="control-label eb-label-text">上级文件夹名称</label>-->
+								<!--<input  class="input-date eb-input" v-model="req.parentLibName"/>-->
+							<!--</div>-->
+						<!--</div>-->
+						<!--<div class="form-group">-->
+							<!--<div class="input-group input-group-sm styled-select" >-->
+								<!--<label class="control-label eb-label-text">文件夹类型</label>-->
+								<!--<select  class="eb-select" v-model="req.type">-->
+									<!--<option value="" > 全部</option>-->
+									<!--<div v-if="pageEnum != null">-->
+										<!--<option v-for="p in pageEnum" v-if="p.dictGroupCode == 'FILE_LIB_TYPE'" v-bind:value="p.dictKey">{{p.dictValue}}</option>-->
+									<!--</div>-->
+								<!--</select>-->
+							<!--</div>-->
+						<!--</div>-->
+
+						<div class="form-group">
+							<button class="eb-btn-search" type="button" @click="reload">
+								<i class="fa fa-search"></i> &nbsp; 查 询
+							</button>
+						</div>
+					</form>
+				</div>
+
+			</div>
+
+
+				<div class="jqGridDiv">
+					<div class="jqGridDiv2" >
+						<table id="jqGrid"></table>
+						<div id="jqGridPager" class="jqGridPager"></div>
+					</div>
+				</div>
+
+		</div>
+
+
+		<div  id="libLayer" style="display: none;" class="eb-layer" >
+			<div class="eb-layer-title">
+				{{title}}
+			</div>
+			<form class="form-horizontal m-t" id="user_form" method="post" v-if="libAddOrEditShow">
+				<input type="hidden" id="userId" name="userId" value="">
+				<div class="form-group mg-h-30">
+					<label class="col-sm-4 control-label eb-label-text"><span class="e-required"> *</span>上级文件夹：</label>
+					<div class="col-sm-7">
+						<input id="parentLibName" v-model="libInfo.parentLibName" disabled class="form-control eb-input-text" type="text" value="" >
+						<input id="parentLibId" v-model="libInfo.parentLibId" class="form-control eb-input-text" type="hidden" >
+					</div>
+				</div>
+				<div class="form-group mg-h-30">
+					<label class="col-sm-4 control-label eb-label-text"><span class="e-required"> *</span>文件夹名称：</label>
+					<div class="col-sm-7">
+						<input id="libName" v-model="libInfo.libName"  class="form-control eb-input-text" type="text" value="">
+						<input id="libId" v-model="libInfo.libId"  class="form-control eb-input-text" type="hidden" value="" >
+					</div>
+				</div>
+
+
+				<div class="form-group mg-h-30" style="text-align: center">
+					<button class="eb-btn-search" type="button" @click="closeLayer()">
+						<i class="fa fa-close"></i> &nbsp; 取消
+					</button>
+
+					<button class="eb-btn-search" type="button" @click="saveOrUpdateLib">
+						<i class="fa fa-check"></i> &nbsp; 确认
+					</button>
+				</div>
+			</form>
+			<form class="form-horizontal m-t"  method="post" v-if="onlySee">
+				<div class="form-group mg-h-30">
+					<label class="col-sm-4 control-label eb-label-text">上级文件夹：</label>
+					<div class="col-sm-7">
+						<input  v-model="libInfo.parentLibName" disabled class="form-control eb-input-text" type="text" value="" >
+					</div>
+				</div>
+				<div class="form-group mg-h-30">
+					<label class="col-sm-4 control-label eb-label-text">文件夹名称：</label>
+					<div class="col-sm-7">
+						<input  v-model="libInfo.libName"  class="form-control eb-input-text" type="text" value="">
+					</div>
+				</div>
+				<div class="form-group mg-h-30">
+					<label class="col-sm-4 control-label eb-label-text">文件夹类型：</label>
+					<div class="col-sm-7" v-if="libInfo.libType == 1">
+						<input    class="form-control eb-input-text" type="text" value="系统文件夹">
+					</div>
+					<div class="col-sm-7" v-if="libInfo.libType == 2">
+						<input    class="form-control eb-input-text" type="text" value="自定义文件夹">
+					</div>
+				</div>
+				<div class="form-group mg-h-30">
+					<label class="col-sm-4 control-label eb-label-text">文件夹路径：</label>
+					<div class="col-sm-7">
+						<input  v-model="libInfo.libURI"  class="form-control eb-input-text" type="text" value="">
+					</div>
+				</div>
+
+				<div class="form-group mg-h-30">
+					<label class="col-sm-4 control-label eb-label-text">创建人：</label>
+					<div class="col-sm-7">
+						<input  v-model="libInfo.createUser"  class="form-control eb-input-text" type="text" value="">
+					</div>
+				</div>
+				<div class="form-group mg-h-30">
+					<label class="col-sm-4 control-label eb-label-text">创建时间：</label>
+					<div class="col-sm-7">
+						<input  v-model="libInfo.createDate"  class="form-control eb-input-text" type="text" value="">
+					</div>
+				</div>
+				<div class="form-group mg-h-30" style="text-align: center">
+					<button class="eb-btn-search" type="button" @click="closeLayer()">
+						<i class="fa fa-close"></i> &nbsp; 返回
+					</button>
+
+				</div>
+			</form>
+		</div>
+
+
+		<div  id="fileLayer" style="display: none;" class="eb-layer" >
+			<div class="eb-layer-title">
+				{{title}}
+			</div>
+			<form class="form-horizontal m-t"  method="post" >
+				<div class="form-group mg-h-30">
+					<label class="col-sm-4 control-label eb-label-text">上级文件夹：</label>
+					<div class="col-sm-7">
+						<input  v-model="fileInfo.libId" disabled class="form-control eb-input-text" type="hidden" value="" >
+						<input  v-model="fileInfo.libName" disabled class="form-control eb-input-text" type="text" value="" >
+					</div>
+				</div>
+				<div class="form-group mg-h-30">
+					<label class="col-sm-4 control-label eb-label-text">文件名称：</label>
+					<div class="col-sm-7">
+						<input  v-model="fileInfo.originName"  class="form-control eb-input-text" type="text" value="">
+					</div>
+				</div>
+
+				<div class="form-group mg-h-30" style="text-align: center">
+					<button class="eb-btn-search" type="button" @click="closeLayer()">
+						<i class="fa fa-close"></i> &nbsp; 取消
+					</button>
+
+					<button class="eb-btn-search" type="button" @click="updateFile">
+						<i class="fa fa-check"></i> &nbsp; 确认
+					</button>
+
+				</div>
+			</form>
+		</div>
+
+		<div class="ibox-content" id="uploadFileDiv" style="display: none">
+			<div class="wrapper wrapper-content animated fadeIn">
+				<div class="">
+					<div class="col-sm-12">
+						<div class="ibox float-e-margins ">
+							<div class="ibox-title file_upload_title">
+								<h5>拖动文件到这里或者点击选择文件上传</h5>
+							</div>
+							<div class="ibox-content" style="width: auto;height: 295px;overflow: hidden">
+								<form id="my-awesome-dropzone" class="dropzone">
+									<input type="hidden" name="libId" v-model="parentLib.libId"/>
+									<div class="dz-default dz-message"></div>
+									<!--<div class="dropzone-previews"></div>
+                                    <button type="submit" class="btn btn-primary pull-right">提交</button>
+                                    -->
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="dropzoneTpl" style="display: none">
+			<div class="dz-preview dz-file-preview">
+				<div class="dz-details">
+					<div class="dz-filename"><span data-dz-name></span></div>
+					<div class="dz-size" data-dz-size></div>
+					<img data-dz-thumbnail/>
+				</div>
+				<div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+				<!--		<div class="dz-success-mark"><span>✔</span></div>
+                        <div class="dz-error-mark"><span>✘</span></div>-->
+				<div class="dz-error-message"><span data-dz-errormessage></span></div>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../plugins/dropzone/dropzone.js"></script>
+<script src="../../js/common.js"></script>
+<script src="js/fileLibList.js"></script>
+</body>
+</html>

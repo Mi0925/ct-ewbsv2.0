@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title>应急广播平台-组织机构管理</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+	<link href="../common/css/eb-common.css" rel="stylesheet">
+	<link href="../system/css/user.css" rel="stylesheet">
+	<link href="../system/css/orgList.css" rel="stylesheet">
+	<link href="../../plugins/ztree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="main-container container-fluid" id="rrapp">
+		<div class="main-content">
+			<div class="page-content">
+
+				<div style="padding-bottom: 60px;">
+					<div class="pull-left">
+						<button v-if="permissions['sys:org:add']" class="eb-btn-operation" @click="add()"><i
+								class="fa fa-save"></i>&nbsp;新增机构</button>
+					</div>
+
+					<div class="pull-right">
+						<form id="form-search-curve" class="form-inline" action="javascript:void(0);">
+							<div class="form-group">
+								<div class="input-group input-group-sm">
+									<label class="control-label eb-label-text">联系人名称</label>
+									<input class="input-date eb-input" v-model="req.contactName" />
+								</div>
+								<div class="input-group input-group-sm">
+									<label class="control-label eb-label-text">单位名称</label>
+									<input class="input-date eb-input" v-model="req.companyName" />
+								</div>
+								<div class="input-group input-group-sm">
+									<label class="control-label eb-label-text">用户名称</label>
+									<input class="input-date eb-input" v-model="req.userName" />
+								</div>
+								<div class="input-group input-group-sm">
+									<label class="control-label eb-label-text">区域名称</label>
+									<input class="input-date eb-input" v-model="req.areaName" />
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="input-group input-group-sm">
+									<button class="eb-btn-search" type="button" onclick="reload()">
+										<i class="fa fa-search"></i> &nbsp; 查 询
+									</button>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+
+				<div class="jqGridDiv">
+					<div class="jqGridDiv2">
+						<table id="jqGrid"></table>
+						<div id="jqGridPager" class="jqGridPager"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="orgLayer" style="display: none;" class="eb-layer">
+			<div class="eb-layer-title">
+				{{title}}
+			</div>
+			<form class="form-horizontal m-t" id="user_form" method="post" v-if="orgAddShow">
+				<input type="hidden" id="userId" name="id" v-model="orgInfo.id" value="">
+				<div class="form-group mg-h-30">
+					<label class="col-sm-5 control-label eb-label-text"><span class="e-required"> *</span>单位名称：</label>
+					<div class="col-sm-7">
+						<input id="username" v-model="orgInfo.companyName" class="form-control eb-input-text"
+							type="text" value="" placeholder="请输入单位名称" maxlength="64">
+					</div>
+				</div>
+				<div class="form-group mg-h-30">
+					<label class="col-sm-5 control-label eb-label-text"><span class="e-required"> *</span>联系人姓名：</label>
+					<div class="col-sm-7">
+						<input id="password1" v-model="orgInfo.contactName" class="form-control eb-input-text"
+							type="text" value="" placeholder="请输入联系人姓名" maxlength="32">
+					</div>
+				</div>
+				<div class="form-group mg-h-30">
+					<label class="col-sm-5 control-label eb-label-text"><span class="e-required"> *</span>联系人电话：</label>
+					<div class="col-sm-7">
+						<input id="password2" v-model="orgInfo.contactTel" class="form-control eb-input-text"
+							type="text" value="" placeholder="请输入联系人电话" maxlength="32">
+					</div>
+				</div>
+				<div class="form-group mg-h-30">
+					<label class="col-sm-5 control-label eb-label-text"><span class="e-required">
+							*</span>所属区域名称：</label>
+					<div class="col-sm-7">
+						<input id="OrgareaName" v-model="orgInfo.areaName" @click="openAreaTreeDlg()"
+							readonly="readonly" class="form-control eb-input-text" value="" placeholder="请选择所属区域">
+					</div>
+				</div>
+				<div class="form-group mg-h-30">
+					<label class="col-sm-5 control-label eb-label-text"><span class="e-required">
+							*</span>关联用户名称：</label>
+					<div class="col-sm-7">
+						<input id="OrguserName" v-model="orgInfo.userName" @click="openUserSelectDlg()"
+							readonly="readonly" class="form-control eb-input-text" value="" placeholder="请选择关联用户">
+					</div>
+				</div>
+				<div class="form-group mg-h-30" style="text-align: center">
+					<button class="eb-btn-search" type="button" @click="closeLayer()">
+						<i class="fa fa-close"></i> &nbsp; 取消
+					</button>
+
+					<button class="eb-btn-search" type="button" @click="save">
+						<i class="fa fa-check"></i> &nbsp; 确认
+					</button>
+				</div>
+			</form>
+		</div>
+		<div id="areaTreeLayer" class="eb-layer">
+			<div class="eb-layer-title">
+				区域选择
+			</div>
+			<div class="main-area">
+				<div class="area-iframe ztree" id="areaTree"></div>
+			</div>
+			<div class="row btns">
+				<button class="eb-btn-search" type="button" @click="closeLayerTree()">
+					<i class="fa fa-close"></i> &nbsp; 取消
+				</button>
+
+				<button class="eb-btn-search" type="button" @click="addTreeArea()">
+					<i class="fa fa-check"></i> &nbsp; 确认
+				</button>
+			</div>
+		</div>
+		<div class="eb-layer page-content" id="selectUserlayer">
+			<div class="eb-layer-title">
+				用户选择
+			</div>
+			<div class="main-area">
+				<table id="jquserGrid"></table>
+				<div id="jquserGridPager" class="jqGridPager"></div>
+			</div>
+			<div class="row btns">
+				<button class="eb-btn-search" type="button" @click="closeLayerTree()">
+					<i class="fa fa-close"></i> &nbsp; 取消
+				</button>
+
+				<button class="eb-btn-search" type="button" @click="addUser()">
+					<i class="fa fa-check"></i> &nbsp; 确认
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="../../plugins/jquery/jquery.min.js"></script>
+	<script src="../../plugins/vue/vue.js"></script>
+	<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+	<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+	<script src="../../plugins/layer/layer.js"></script>
+	<script src="../../plugins/laydate/laydate.js"></script>
+	<script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+	<script src="../../js/common.js"></script>
+	<script src="js/orgList.js"></script>
+</body>
+
+</html>

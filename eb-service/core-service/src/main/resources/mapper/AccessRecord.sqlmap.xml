@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.core.main.access.mapper.AccessRecordMapper">
+
+    <select id="queryList" resultType="cn.comtom.domain.core.access.info.AccessRecordInfo">
+        select
+        re.*,
+        v.ebrName as psEbrName,
+        fi.file_size as fileSize,
+        dict.dict_value as statusName
+        from bc_access_record re
+        left join
+        v_bc_ebr_info v on re.nodeId=v.ebrId
+        left join
+        bc_origin_file_info fi on re.fileId=fi.file_id
+        left join
+        sys_dict dict on re.status=dict.dict_key and dict.dict_group_code=#{dictGroupCode}
+        <where>
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(nodeId)">
+              And re.nodeId=#{nodeId}
+            </if>
+
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(status)">
+               And re.status=#{status}
+            </if>
+
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(type)">
+                And re.type=#{type}
+            </if>
+
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(startReceiveTime)">
+                And re.receiveTime &gt;=#{startReceiveTime}
+            </if>
+
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(endReceiveTime)">
+                And re.receiveTime &lt;=#{endReceiveTime}
+            </if>
+        </where>
+        order by re.receiveTime desc
+    </select>
+
+</mapper>

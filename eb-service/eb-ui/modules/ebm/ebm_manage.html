@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+<title>应急广播平台-预警管理</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link href="../common/css/eb-common.css" rel="stylesheet">
+<link href="../common/css/eb-right-float.css" rel="stylesheet">
+<link href="css/ebm_manage.css" rel="stylesheet">
+<!-- <link rel="stylesheet" href="css/jquery.audio5js.css" /> -->
+<link href="../resource/css/fileLib.css" rel="stylesheet">
+<!-- <script type="text/javascript" src="../../js/audio.min.js"></script> -->
+<link href="../common/css/autoplay.css" rel="stylesheet">
+<script type="text/javascript" src="../../js/autoplay.js"></script>
+<script type="text/javascript" src="../../js/audioplayer.js"></script>
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" >
+	<div class="main-content" >
+		<div class="page-content"  >
+			
+			<div class="float-div" id="float-div">
+				<div class="right-float-div" >
+					<div class="left-sidebar" onclick="leftSidebarClick()"></div>
+
+						<div v-if="ebmInfo != null" class="detail-content">
+							<div class="detail-head">
+								<div class="detail-title">
+									<div class="title-span" v-bind:title="ebmInfo.msgTitle">
+										<i class="fa fa-home"></i>
+										{{ebmInfo.msgTitle | filterFun}}
+									</div>
+								</div>
+								<div class="detail-btn-group">
+									<!--<div v-if="ebmInfo.ebdFilesInfo != null" type="button" class="detail-btn" @click="downAuxiliaryFile(ebmInfo.ebdFilesInfo.fileId)" >
+										<i class="fa fa-home"></i>
+										<span>
+											辅助数据下载
+										</span>
+									</div>-->
+									<div v-if="ebmInfo.originFileInfo != null && ebmInfo.originFileInfo.fileId != null"
+										 type="button" class="detail-btn" @click="downOriginFile(ebmInfo.originFileInfo.fileId)">
+										<i class="fa fa-download"></i>
+										<span>
+											消息数据包下载
+										</span>
+									</div>
+								</div>
+
+							</div>
+							<div class="detail-body">
+								<table>
+									<tr>
+										<td class="label-td">
+											<div class="detail-body-label">
+												<span> 编号</span>
+											</div>
+										</td>
+										<td>
+											<div class="detail-text">
+												{{ebmInfo.ebmId}}
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="label-td">
+											<div class="detail-body-label">
+												<span> 基本信息</span>
+											</div>
+										</td>
+										<td>
+											<div class="detail-text">
+												<div class="sub-detail-text">
+													<div class="detail-text-label">预警类型：</div>
+													<div class="detail-text-content">{{ebmInfo.msgType | getEnumName('MSG_TYPE_DICT')}}</div>
+												</div>
+												<div class="sub-detail-text">
+													<div class="detail-text-label">发布机构：</div>
+													<div class="detail-text-content">{{ebmInfo.sendName}}</div>
+												</div>
+												<div class="sub-detail-text">
+													<div class="detail-text-label">发布时间：</div>
+													<div class="detail-text-content">{{ebmInfo.sendTime}}</div>
+												</div>
+												<div class="sub-detail-text">
+													<div class="detail-text-label">事件类型：</div>
+													<div class="detail-text-content">{{ebmInfo.eventType | getEnumName('EVENT_TYPE_DICT') }}</div>
+												</div>
+												<div class="sub-detail-text">
+													<div class="detail-text-label">事件级别：</div>
+													<div class="detail-text-content">{{ebmInfo.severity | getEnumName('SEVERITY_DICT')}}</div>
+												</div>
+												<div class="sub-detail-text">
+													<div class="detail-text-label">开始时间：</div>
+													<div class="detail-text-content">{{ebmInfo.startTime}}</div>
+												</div>
+												<div class="sub-detail-text">
+													<div class="detail-text-label">结束时间：</div>
+													<div class="detail-text-content">{{ebmInfo.endTime}}</div>
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td class="label-td">
+											<div class="detail-body-label">
+												<span> 预警内容</span>
+											</div>
+										</td>
+										<td>
+											<div class="detail-text">
+												<div class="sub-detail-text">
+													<div class="detail-text-label">广播语种：</div>
+													<div class="detail-text-content">{{ebmInfo.msgLanguageCode | getEnumName('MSG_LANG_DICT')}}</div>
+												</div>
+												<div class="sub-detail-text">
+													<div class="detail-text-label">预警标题：</div>
+													<div class="detail-text-content">{{ebmInfo.msgTitle}}</div>
+												</div>
+												<div class="sub-detail-text">
+													<div class="detail-text-label">预警内容：</div>
+													<div class="detail-text-content">
+														<span id="closeDesc">{{ebmInfo.msgDesc | filterDescFun}}</span>
+														<span id="openDesc" style="display: none;">{{ebmInfo.msgDesc}}</span>
+														<a v-if="msgDescBtnShow" id="msgDesc-btn" class="msgDesc-btn" onclick="msgDescBtnClick(this)">展开全部</a>
+													</div>
+												</div>
+												<div class="sub-detail-text">
+													<div class="detail-text-label">覆盖区域：</div>
+													<div class="detail-text-content">{{ebmInfo.areaCode | getAreaNameFilter}}</div>
+												</div>
+											</div>
+
+										</td>
+									</tr>
+									<tr v-if="ebmInfo.ebmAuxiliaryInfoList != null && ebmInfo.ebmAuxiliaryInfoList.length > 0">
+										<td class="label-td">
+											<div class="detail-body-label">
+												<span> 辅助数据</span>
+											</div>
+										</td>
+										<td>
+											<div v-for="(auxiliary,index) in ebmInfo.ebmAuxiliaryInfoList" class="detail-text div-hr">
+												<div class="sub-detail-text">
+													<label class="detail-text-label">数据类型：</label>
+													<div class="detail-text-content">{{auxiliary.auxiliaryType | getEnumName('AUXILIARY_TYPE_DICT')}}</div>
+												</div>
+												<div class="sub-detail-text">
+													<label class="detail-text-label">数据描述：</label>
+													<div class="detail-text-content">{{auxiliary.auxiliaryDesc}}</div>
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr v-if="ebmInfo.ebrInfoList != null && ebmInfo.ebrInfoList.length > 0">
+										<td class="label-td">
+											<div class="detail-body-label">
+												<span> 调用资源</span>
+											</div>
+										</td>
+										<td>
+											<div v-for="res in ebmInfo.ebrInfoList" class="detail-text div-hr" >
+												<div class="sub-detail-text">
+													<div class="detail-text-label">{{res.ebrType | getEnumName('EBR_TYPE')}} :</div>
+													<div class="detail-text-content">{{res.ebrType | getEbrNamesFilter}}</div>
+												</div>
+											</div>
+										</td>
+									</tr>
+									<tr v-if="ebmInfo.audioPath != null" >
+										<td class="label-td">
+											<div class="detail-body-label">
+												<span> 节目试听</span><span id="voice1" ></span>
+											</div>
+										</td>
+										<td>
+											<div class="detail-text div-hr" id="audioEle">
+												
+											 <!-- <audio  v-bind:src="ebmInfo.audioPath" preload="none"/> -->
+											</div>
+										</td>
+									</tr>
+								</table>
+
+							</div>
+						</div>
+				</div>
+				<i class="fa fa-angle-double-right" style="width: 60px;height: 120px;"></i>
+			</div>
+
+			<div class="pull-right" id="searchDiv">
+				<form id="form-search-curve" class="form-inline"  action="javascript:void(0);" >
+					<!--<div class="form-group">-->
+						<!--<div class="input-group input-group-sm styled-select" >-->
+							<!--<label class="control-label eb-label-text">ID</label>-->
+							<!--<input  class="input-date eb-input" v-model="req.ebmId"/>-->
+						<!--</div>-->
+					<!--</div>-->
+					<div class="form-group">
+						<div class="input-group input-group-sm styled-select" >
+							<label class="control-label eb-label-text">事件标题</label>
+							<input  class="input-date eb-input" v-model="req.msgTitle"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-group input-group-sm styled-select" >
+							<label class="control-label eb-label-text">来源单位</label>
+							<span class="select-parent-div">
+								<select  class="eb-select" v-model="req.senderCode">
+									<option value="" >全部</option>
+									<option :value="ebrView.ebrId" v-for="ebrView in ebrViewList" >{{ebrView.ebrName}}</option>
+								</select>
+							</span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="input-group input-group-sm">
+							<label class="control-label eb-label-text">事件级别</label>
+							<select  class="eb-select"  v-model="req.severity">
+								<option value="" >全部</option>
+								<div v-if="severityEnum != null">
+									<option v-for="e in severityEnum"  v-bind:value="e.dictKey">{{e.dictValue}}</option>
+								</div>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="input-group input-group-sm">
+							<div class="form-group">
+								<div class="input-group input-group-sm">
+									<label class="control-label eb-label-text">发布时间</label>
+									<input  class="input-date eb-input" readonly v-model="req.startTime" id="startTime" placeholder="yyyy-MM-dd"/>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="input-group input-group-sm">
+									<label class="control-label eb-date-label-text">至</label>
+									<input  class="input-date eb-input" readonly v-model="req.endTime" id="endTime" placeholder="yyyy-MM-dd"/>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<button v-if="permissions['core:ebm:query']" class="eb-btn-search" type="button" @click="reload">
+							<i class="fa fa-search"></i> &nbsp; 查 询
+						</button>
+					</div>
+				</form>
+
+			</div>
+
+
+				<div class="jqGridDiv">
+					<div class="jqGridDiv2" >
+						<table id="jqGrid"></table>
+						<div id="jqGridPager" class="jqGridPager"></div>
+					</div>
+				</div>
+
+		</div>
+
+		<div  id="ebmAuditLayer" style="display: none;" class="eb-layer" >
+			<div class="eb-layer-title">
+				消息审核
+			</div>
+			<form class="form-horizontal m-t"  method="post" >
+				<div class="form-group mg-h-30">
+					<label class="col-sm-4 control-label eb-label-text">审核意见：</label>
+					<div class="col-sm-7">
+						<textarea  class="audit-textarea" rows="5" :value="auditComment" id="auditOpinion" v-model="auditComment">
+						</textarea>
+					</div>
+				</div>
+
+				<div class="form-group mg-h-30" style="text-align: center">
+					<button class="eb-btn-search" type="button" onclick="auditEbm(1)">
+						<i class="fa fa-check"></i> &nbsp; 审核通过
+					</button>
+					<button class="eb-btn-search" type="button" onclick="auditEbm(2)">
+						<i class="fa fa-close"></i> &nbsp; 审核不通过
+					</button>
+
+				</div>
+			</form>
+		</div>
+
+	</div>
+
+</div>
+
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../../js/dateformat.js"></script>
+<script src="js/ebm.js"></script>
+</body>
+</html>

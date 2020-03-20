@@ -1,0 +1,2 @@
+当前目录下运行如下命令一键修改版本号：
+mvn versions:set -DnewVersion=V2.0.1

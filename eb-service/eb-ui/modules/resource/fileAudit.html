@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+<title>应急广播平台-文件审核</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+	<link href="../common/css/eb-common.css" rel="stylesheet">
+	<link href="../resource/css/fileLib.css" rel="stylesheet">
+	<link href="../common/css/eb-right-float.css" rel="stylesheet">
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" >
+	<div class="main-content" >
+		<div class="page-content"  >
+
+			<!-- 详情浮动框  -->
+			<div class="float-div" id="float-div">
+				<div class="right-float-div" >
+					<div class="left-sidebar" onclick="leftSidebarClick()"></div>
+
+					<div v-if="fileInfo != null" class="detail-content">
+						<div class="detail-head">
+							<div class="detail-title">
+								<div class="title-span" v-bind:title="fileInfo.fileName">
+									<i class="fa fa-home"></i>
+									{{fileInfo.originName}}
+								</div>
+							</div>
+						</div>
+						<div class="detail-body">
+							<table>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 文件ID</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											{{fileInfo.id}}
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 基本信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text">
+												<div class="detail-text-label">文件类型：</div>
+												<div class="detail-text-content" v-if="fileInfo.fileType ==1"> 媒体文件</div>
+												<div class="detail-text-content" v-if="fileInfo.fileType ==2"> 文本文件</div>
+											</div>
+											<div class="sub-detail-text" >
+												<div class="detail-text-label">文件名后缀：</div>
+												<div class="detail-text-content">{{fileInfo.fileExt}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">MD5：</div>
+												<div class="detail-text-content">{{fileInfo.md5Code}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">文件大小：</div>
+												<div class="detail-text-content">{{fileInfo.byteSize | filterFileSize}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">文件夹名称：</div>
+												<div class="detail-text-content" >{{fileInfo.libName}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="fileInfo.fileType == 2">
+												<div class="detail-text-label">文本广播内容：</div>
+												<div class="detail-text-content" :title="fileInfo.fileText" >{{fileInfo.fileText | filterFun(50) }}</div>
+											</div>
+											<div class="sub-detail-text" v-if="fileInfo.fileDesc != null && fileInfo.fileDesc != '' ">
+												<div class="detail-text-label">文件描述：</div>
+												<div class="detail-text-content" :title="fileInfo.fileDesc" >{{fileInfo.fileDesc | filterFun(50) }}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">创建人：</div>
+												<div class="detail-text-content">{{fileInfo.createUser}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">创建时间：</div>
+												<div class="detail-text-content">{{fileInfo.createDate}}</div>
+											</div>
+
+
+
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 审核信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text">
+												<div class="detail-text-label">审核状态：</div>
+												<div class="detail-text-content" v-if="fileInfo.auditState ==1"> 审核通过</div>
+												<div class="detail-text-content" v-if="fileInfo.auditState ==2"> 审核不通过</div>
+												<div class="detail-text-content" v-if="fileInfo.auditState ==0"> 未审核</div>
+											</div>
+											<div class="sub-detail-text" v-if="fileInfo.auditUser != null && fileInfo.auditUser != ''">
+												<div class="detail-text-label">审核人：</div>
+												<div class="detail-text-content">{{fileInfo.auditUser}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="fileInfo.auditComment != null && fileInfo.auditComment != ''">
+												<div class="detail-text-label">审核意见：</div>
+												<div class="detail-text-content">{{fileInfo.auditComment | filterFun(50)}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="fileInfo.auditDate != null && fileInfo.auditDate != ''">
+												<div class="detail-text-label">审核时间：</div>
+												<div class="detail-text-content">{{fileInfo.auditDate}}</div>
+											</div>
+
+										</div>
+									</td>
+								</tr>
+
+							</table>
+
+						</div>
+					</div>
+				</div>
+				<i class="fa fa-angle-double-right" style="width: 60px;height: 120px;"></i>
+			</div>
+			<!-- 详情浮动框  end-->
+			
+			<div class="pull-right" id="searchDiv" style="width: 100%">
+				<div class="btn_group">
+					<button v-if="permissions['res:file:audit']" class="eb-btn-opt" type="button" onclick="toAuditFile()">
+						审&nbsp;&nbsp;&nbsp;核
+					</button>
+					<!--<button class="eb-btn-opt" type="button" onclick="toAuditFile(2)">
+						审核不通过
+					</button>-->
+				</div>
+				<form id="form-search-curve" class="form-inline" style="float: right"  action="javascript:void(0);" >
+					<!--<div class="form-group">
+						<div class="input-group input-group-sm styled-select" >
+							<label class="control-label eb-label-text">文件夹名称</label>
+							<input  class="input-date eb-input" v-model="req.libName"/>
+						</div>
+					</div>-->
+					<div class="form-group">
+						<div class="input-group input-group-sm styled-select" >
+							<label class="control-label eb-label-text">文件名称</label>
+							<input  class="input-date eb-input" v-model="req.originName"/>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<button class="eb-btn-search" type="button" @click="reload">
+							<i class="fa fa-search"></i> &nbsp; 查 询
+						</button>
+					</div>
+				</form>
+
+			</div>
+
+
+				<div class="jqGridDiv">
+					<div class="jqGridDiv2" >
+						<table id="jqGrid"></table>
+						<div id="jqGridPager" class="jqGridPager"></div>
+					</div>
+				</div>
+
+		</div>
+
+
+		<div  id="fileAuditLayer" style="display: none;" class="eb-layer" >
+			<div class="eb-layer-title">
+				{{title}}
+			</div>
+			<form class="form-horizontal m-t"  method="post" >
+				<div class="form-group mg-h-30">
+					<label class="col-sm-4 control-label eb-label-text">审核意见：</label>
+					<div class="col-sm-7">
+						<textarea  class="audit-textarea" rows="5" :value="auditComment" id="auditOpinion" v-model="auditComment">
+						</textarea>
+					</div>
+				</div>
+
+				<div class="form-group mg-h-30" style="text-align: center">
+					<!--<button class="eb-btn-search" type="button" @click="closeLayer()">
+						<i class="fa fa-close"></i> &nbsp; 取消
+					</button>-->
+
+					<button class="eb-btn-search" type="button" onclick="auditFile(1)">
+						<i class="fa fa-check"></i> &nbsp; 审核通过
+					</button>
+					<button class="eb-btn-search" type="button" onclick="auditFile(2)">
+						<i class="fa fa-close"></i> &nbsp; 审核不通过
+					</button>
+
+				</div>
+			</form>
+		</div>
+
+	</div>
+
+</div>
+
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../js/common.js"></script>
+<script src="js/fileAudit.js"></script>
+</body>
+</html>

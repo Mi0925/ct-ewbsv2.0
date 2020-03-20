@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+	<title>应急广播平台-终端资源</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+	<link href="../common/css/eb-common.css" rel="stylesheet">
+	<link href="../resource/css/fileLib.css" rel="stylesheet">
+	<link href="../common/css/eb-right-float.css" rel="stylesheet">
+	<link href="../../plugins/dropzone/dropzone.css" rel="stylesheet">
+	<link href="../../plugins/dropzone/basic.css" rel="stylesheet">
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" >
+	<div class="main-content" >
+		<div class="page-content"  >
+
+
+			<div class="pull-right" id="searchDiv" style="width: 100%">
+				<div class="btn_group" style="margin-bottom: 5px;">
+					<button v-if="permissions['sys:infoSrc:add']" class="eb-btn-opt" type="button" onclick="showEbrAddLayer()">
+						新&nbsp;&nbsp;增
+					</button>
+					<button  class="eb-btn-opt" type="button"  @click='importCertFile(1)'>
+							 导入证书
+					</button>
+					<button  class="eb-btn-opt" type="button" @click='importCertFile(2)'>
+							 导入证书链
+					</button>
+				</div>
+
+
+			</div>
+
+
+			<div class="jqGridDiv">
+				<div class="jqGridDiv2" >
+					<table id="jqGrid"></table>
+					<div id="jqGridPager" class="jqGridPager"></div>
+				</div>
+			</div>
+
+		</div>
+
+
+		<div  id="ebrLayer" style="display: none;" class="eb-layer" >
+			<div class="eb-layer-title">
+				{{title}}
+			</div>
+			<div style="height: 68%;overflow-y: auto;overflow-x: hidden">
+
+				<form class="form-horizontal m-t" id="user_form" method="post"  >
+
+					<div class="form-group ">
+						<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>资源名称：</label>
+						<div class="col-sm-4">
+							<input id="ebrName" v-model="ebrInfo.ebrName"  class="form-control eb-input-text" type="text" value="" maxlength="100">
+						</div>
+					</div>
+
+					<div class="form-group " >
+						<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>资源级别：</label>
+						<div class="col-sm-4">
+							<select  class="eb-select" v-model="ebrInfo.ebrLevel" onchange="ebrLevelChange(this)">
+								<option value="" > 请选择</option>
+								<div v-if="pageEnum != null">
+									<option v-for="p in pageEnum" v-if="p.dictGroupCode == 'RES_LEVEL_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+								</div>
+							</select>
+						</div>
+						<label class="col-sm-2 control-label eb-label-text"  v-if="!currentLevel"><span class="e-required"> *</span>资源编码：</label>
+						<div class="col-sm-4" v-if="!currentLevel">
+							<input id="ebrId" v-model="ebrInfo.ebrId"  class="form-control eb-input-text" type="text" value="">
+						</div>
+					</div>
+
+					<div class="form-group " >
+
+						<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>资源类型：</label>
+						<div class="col-sm-4" >
+							<select  class="eb-select" v-model="ebrInfo.ebrType" v-bind:disabled="!currentLevel" onchange="ebrTypeChange(this)">
+								<option value="" >请选择 </option>
+								<div v-if="pageEnum != null">
+									<option v-for="p in pageEnum" v-if="p.dictGroupCode == 'EBR_TYPE' " v-bind:value="p.dictKey">{{p.dictValue}}</option>
+								</div>
+							</select>
+
+							<select  class="eb-select" v-model="ebrInfo.resType" v-if="currentLevel">
+								<option value="" >请选择 </option>
+								<div v-if="resTypeList != null">
+									<option v-for="p in resTypeList"  v-bind:value="p.dictKey">{{p.dictValue}}</option>
+								</div>
+							</select>
+						</div>
+
+						<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>资源子类型：</label>
+						<div class="col-sm-4" >
+							<select  class="eb-select" v-model="ebrInfo.subResType" v-bind:disabled="!currentLevel || ebrInfo.ebrType == '01'">
+								<option value="" >请选择 </option>
+								<div v-if="pageEnum != null">
+									<option v-for="p in pageEnum" v-if="p.dictGroupCode == 'SUB_RES_TYPE_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+								</div>
+							</select>
+						</div>
+						
+					</div>
+					
+					  
+				    <div class="form-group " >
+						<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>消息发送类型：</label>
+						<div class="col-sm-4">
+							 <select  class="eb-select" v-model="ebrInfo.resChannel">
+								<div v-if="pageEnum != null">
+									<option v-for="p in pageEnum" v-if="p.dictGroupCode == 'RES_CHANNEL_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+								</div>
+							</select>
+						</div>
+						<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>关联平台 | 台站：</label>
+						<div class="col-sm-4">
+							<select  class="eb-select" v-model="ebrInfo.ebrStId" v-bind:disabled="isRelDisabled">
+							   <option value="" >请选择 </option>
+								<div v-if="pageEnum != null">
+									<option v-for="p in stationList"  v-bind:value="p.ebrStId">{{p.ebrStName}}</option>
+								</div>
+							</select>
+							<select  class="eb-select" v-model="ebrInfo.ebrStId" v-bind:disabled="isRelDisabled">
+							   <option value="" >请选择 </option>
+								<div v-if="pageEnum != null">
+									<option v-for="p in stationList"  v-bind:value="p.ebrStId">{{p.ebrStName}}</option>
+								</div>
+							</select>
+						</div>
+						<!-- <div class="col-sm-4">
+							
+						</div> -->
+					</div>
+
+					<!--<div class="form-group ">
+
+						<label class="col-sm-2 control-label eb-label-text">关联台站/前端：</label>
+						<div class="col-sm-4">
+							<select  class="eb-select" v-model="ebrInfo.relatedRsEbrId"  >
+								<option value="" >请选择 </option>
+								<div v-if="stationList != null">
+									<option v-for="s in stationList"  v-bind:value="s.ebrStId">{{s.ebrStName}}</option>
+								</div>
+							</select>
+						</div>
+						<label class="col-sm-2 control-label eb-label-text">关联适配器：</label>
+						<div class="col-sm-4">
+							<select  class="eb-select" v-model="ebrInfo.relatedAsEbrId"  >
+								<option value="" >请选择 </option>
+								<div v-if="adapterList != null">
+									<option v-for="a in adapterList" v-bind:value="a.ebrAsId">{{a.ebrAsName}}</option>
+								</div>
+							</select>
+						</div>
+					</div>-->
+
+					<!--<div class="form-group ">
+						<label class="col-sm-2 control-label eb-label-text">单位类型：</label>
+						<div class="col-sm-4">
+							<select  class="eb-select" v-model="ebrInfo.orgType">
+								<option value="" >请选择 </option>
+								<div v-if="pageEnum != null">
+									<option v-for="p in pageEnum" v-if="p.dictGroupCode == 'ORG_TYPE_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+								</div>
+							</select>
+						</div>
+						<label class="col-sm-2 control-label eb-label-text">单位名称：</label>
+						<div class="col-sm-4">
+							<input id="orgName" v-model="ebrInfo.orgName"  class="form-control eb-input-text" type="text" value="">
+						</div>
+					</div>-->
+
+					<div class="form-group ">
+						<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>平台经度：</label>
+						<div class="col-sm-4">
+							<input id="longitude" v-model="ebrInfo.longitude"  class="form-control eb-input-text" type="text" value="">
+						</div>
+						<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>平台纬度：</label>
+						<div class="col-sm-4">
+							<input id="latitude" v-model="ebrInfo.latitude"  class="form-control eb-input-text" type="text" value="">
+						</div>
+					</div>
+					<div class="form-group " >
+						<label class="col-sm-2 control-label eb-label-text"><span hidden="hidden" class="e-required tel-show"> *</span>联系人：</label>
+						<div class="col-sm-4">
+							<input id="contact" v-model="ebrInfo.contact"  class="form-control eb-input-text" type="text" value="">
+						</div>
+						<label class="col-sm-2 control-label eb-label-text"><span hidden="hidden" class="e-required tel-show"> *</span>联系电话：</label>
+						<div class="col-sm-4">
+							<input id="phoneNumber" v-model="ebrInfo.phoneNumber"  class="form-control eb-input-text" type="text" value="">
+						</div>
+					</div>
+				<!--	<div class="form-group ">
+						<label class="col-sm-2 control-label eb-label-text">覆盖区域：</label>
+						<div class="col-sm-4">
+							<input id="areaCode" v-model="ebrInfo.areaCode"  class="form-control eb-input-text" type="hidden" value="">
+							<button value="选择" /><span>长沙市</span>
+						</div>
+						<label class="col-sm-2 control-label eb-label-text">覆盖面积：</label>
+						<div class="col-sm-4">
+							<input id="square" v-model="ebrInfo.square"  class="form-control eb-input-text" type="text" value="">
+						</div>
+					</div>-->
+
+
+
+
+					<div class="form-group 30">
+						<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>资源IP信息：</label>
+						<div class="col-sm-4">
+							<input id="srcHost" v-model="ebrInfo.srcHost"  class="form-control eb-input-text" type="text" value="">
+						</div>
+
+						<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>目标URL：</label>
+						<div class="col-sm-4">
+							<input id="ebrUrl" v-model="ebrInfo.ebrUrl"  class="form-control eb-input-text" type="text" value="">
+						</div>
+
+
+					</div>
+					<div class="form-group 30">
+						<label class="col-sm-2 control-label eb-label-text">备注：</label>
+						<div class="col-sm-4">
+							<input id="remark" v-model="ebrInfo.remark"  class="form-control eb-input-text" type="text" value="" maxlength="127">
+						</div>
+					</div>
+
+				</form>
+			</div>
+			<div class="form-group mg-h-30" style="text-align: center">
+				<button class="eb-btn-search" type="button" @click="closeLayer()">
+					<i class="fa fa-close"></i> &nbsp; 取消
+				</button>
+
+				<button class="eb-btn-search" type="button" onclick="saveOrUpdateEbr()">
+					<i class="fa fa-check"></i> &nbsp; 确认
+				</button>
+			</div>
+
+		</div>
+
+		<div class="ibox-content" id="uploadFileDiv2" style="display: none">
+			<div class="wrapper wrapper-content animated fadeIn">
+				<div class="">
+					<div class="col-sm-12">
+						<div class="ibox float-e-margins ">
+							<div class="ibox-title file_upload_title">
+								<h5>拖动文件到这里或者点击选择文件上传</h5>
+							</div>
+							<div class="ibox-content" style="width: auto;height: 295px;overflow: hidden">
+								<form id="my-awesome-dropzone" class="dropzone">
+									<input type="hidden" name="filetype" v-model="filetype"/>
+									<div class="dz-default dz-message"></div>
+									<!--<div class="dropzone-previews"></div>
+                                    <button type="submit" class="btn btn-primary pull-right">提交</button>
+                                    -->
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="dropzoneTpl" style="display: none">
+				<div class="dz-preview dz-file-preview">
+					<div class="dz-details">
+						<div class="dz-filename"><span data-dz-name></span></div>
+						<div class="dz-size" data-dz-size></div>
+						<img data-dz-thumbnail/>
+					</div>
+					<div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+					<!--		<div class="dz-success-mark"><span>✔</span></div>
+	                        <div class="dz-error-mark"><span>✘</span></div>-->
+					<div class="dz-error-message"><span data-dz-errormessage></span></div>
+				</div>
+			</div>
+	</div>
+
+</div>
+
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../plugins/dropzone/dropzone.js"></script>
+<script src="../../js/common.js"></script>
+<script src="js/info_src.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>应急广播平台</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+    <link href="css/gis.css" rel="stylesheet">
+    <link href="../common/css/eb-common.css" rel="stylesheet">
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp"  v-cloak="">
+    <div class="main-content">
+        <div class="page-content" >
+
+            <div class="pull-right">
+                <form id="form-search-curve" class="form-inline" action="javascript:void(0);" >
+                    <div class="form-group">
+                        <div class="input-group input-group-sm styled-select" >
+                            <label class="control-label eb-label-text">上报平台</label>
+                            <select  class="eb-select" v-model="req.relatedPsEbrId">
+                                <option value="" >全部</option>
+                                <option :value="platform.psEbrId" v-for="platform in platformList" >{{platform.psEbrName}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group input-group-sm styled-select" >
+                            <label class="control-label eb-label-text">资源类型</label>
+                            <select  class="eb-select" v-model="req.ebrType">
+                                <option value="" >全部</option>
+                                <option :value="ebrType.dictKey" v-for="ebrType in ebrTypeList" >{{ebrType.dictValue}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group input-group-sm styled-select" >
+                            <label class="control-label eb-label-text">资源状态</label>
+                            <select  class="eb-select" v-model="req.status">
+                                <option value="" >全部</option>
+                                <option :value="ebrStatu.dictKey" v-for="ebrStatu in ebrStatuList" >{{ebrStatu.dictValue}}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="eb-btn-search" type="button" @click="reload()">
+                            <i class="fa fa-search"></i> &nbsp; 查 询
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+
+
+            <div class="jqGridDiv">
+                <div class="jqGridDiv2" >
+                    <div id="container" class="map" ></div>
+
+                    <div class="info" v-show="showEbrStateCount">
+                            <table class="ebrStatueTable">
+                                <thead >
+                                    <th >资源信息分布情况</th>
+                                </thead>
+                                <tbody >
+                                    <tr>
+                                        <td>
+                                            <div v-for="ebr in ebrStatusCount" style="padding-bottom: 8px;">
+                                                <table style="width: 100%;" >
+                                                    <tr >
+                                                        <td style="padding-left: 30px;" colspan="2">{{ebr.ebrTypeName}}</td>
+                                                    </tr>
+                                                    <tr  v-for="ebrStatus in ebr.data" >
+                                                        <td  align="left" style="padding-left: 40px;width: 80%;">
+                                                            <img :src=`img/${ebrStatus.status}.png` style="width: 12px;height: 12px;">
+                                                            &nbsp;
+                                                            {{ebrStatus.ebrType}}</td>
+                                                        <td width="20%;" align="left">{{ebrStatus.total}}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.13&key=88447c09f6fe02d33ddcd948bad8bed0"></script>
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../js/common.js"></script>
+<script src="js/gis.js"></script>
+</body>
+</html>

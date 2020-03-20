@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.core.main.program.mapper.ProgramMapper">
+
+    <resultMap id="programInfoMap" type="cn.comtom.domain.core.program.info.ProgramInfo">
+        <id column="programId" property="programId" javaType="string"/>
+        <result column="programType" property="programType" javaType="integer"/>
+        <result column="programName" property="programName" javaType="string"/>
+        <result column="programLevel" property="programLevel" javaType="integer"/>
+        <result column="createTime" property="createTime" javaType="java.util.Date"/>
+        <result column="updateTime" property="updateTime" javaType="java.util.Date"/>
+        <result column="auditResult" property="auditResult" javaType="integer"/>
+        <result column="auditOpinion" property="auditOpinion" javaType="string"/>
+        <result column="auditTime" property="auditTime" javaType="java.util.Date"/>
+        <result column="auditUser" property="auditUser" javaType="string"/>
+        <result column="contentType" property="contentType" javaType="integer"/>
+        <result column="languageCode" property="languageCode" javaType="string"/>
+        <result column="createUser" property="createUser" javaType="string"/>
+        <result column="state" property="state" javaType="integer"/>
+        <result column="ebmEventType" property="ebmEventType" javaType="string"/>
+        <result column="ebmEventDesc" property="ebmEventDesc" javaType="string"/>
+        <result column="ebrName" property="ebrName" javaType="string"/>
+        <result column="ebrId" property="ebrId" javaType="string"/>
+        <result column="drillType" property="drillType" javaType="integer"/>
+		
+        <association property="programStrategy" column="programId"  select="getProgramStrategyByProgramId"/>
+        <association property="programContent" column="programId" javaType="cn.comtom.domain.core.program.info.ProgramContentInfo" select="getProgramContentByProgramId"/>
+        <collection property="filesList" column="programId"  ofType="cn.comtom.domain.core.program.info.ProgramFilesInfo" select="getProgramFilesByProgramId"/>
+        <collection property="areaList" column="programId"   ofType="cn.comtom.domain.core.program.info.ProgramAreaInfo" select="getProgramAreaByProgramId"/>
+    </resultMap>
+
+    <resultMap id="programStrategyMap" type="cn.comtom.domain.core.program.info.ProgramStrategyInfo">
+        <id column="strategyId" property="strategyId" javaType="string"/>
+        <result column="strategyType" property="strategyType" javaType="integer" />
+        <result column="playTime" property="playTime" javaType="string" />
+        <result column="startTime" property="startTime" javaType="string" />
+        <result column="overTime" property="overTime" javaType="string" />
+        <result column="weekMask" property="weekMask" javaType="integer" />
+        <result column="programId" property="programId" javaType="string" />
+        <collection property="timeList" column="strategyId" ofType="cn.comtom.domain.core.program.info.ProgramTimeInfo" select="getProgramTimeByStrategyId"/>
+    </resultMap>
+    
+
+    <insert id="saveProgramContentInfo" parameterType="cn.comtom.domain.core.program.info.ProgramContentInfo" >
+        INSERT INTO BC_PROGRAM_CONTENT (ID,PROGRAMID,CONTENT,secondLength) VALUE (
+        #{id},
+        #{programId},
+        #{content},
+        #{secondLength}
+        )
+    </insert>
+
+    <insert id="saveProgramFileInfoList" parameterType="java.util.List">
+        insert into bc_program_files (id,programId,fileId,fileName,secondLength) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.id},
+            #{item.programId},
+            #{item.fileId},
+            #{item.fileName},
+            #{item.secondLength}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="saveProgramAreaList" parameterType="java.util.List">
+        insert into bc_program_area (id,programId,areaCode) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.id},
+            #{item.programId},
+            #{item.areaCode}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="saveProgramTimeInfoList" parameterType="java.util.List">
+        insert into bc_program_time (timeId,startTime,overTime,durationTime,strategyId,handleFlag,dayOfMonth) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.timeId},
+            #{item.startTime},
+            #{item.overTime},
+            #{item.durationTime},
+            #{item.strategyId},
+            #{item.handleFlag},
+            #{item.dayOfMonth}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="saveProgramStrategyInfo" parameterType="cn.comtom.domain.core.program.info.ProgramStrategyInfo">
+        insert into bc_program_strategy (strategyId,strategyType,playTime,startTime,overTime,weekMask,programId) VALUE
+            (
+            #{strategyId},
+            #{strategyType},
+            str_to_date(#{playTime} , '%Y-%m-%d'),
+            str_to_date(#{startTime} , '%Y-%m-%d'),
+            str_to_date(#{overTime} , '%Y-%m-%d'),
+            #{weekMask},
+            #{programId}
+            )
+    </insert>
+
+    <delete id="deleteProgramAreaByProgramId" parameterType="string">
+        delete from bc_program_area where programId = #{programId}
+    </delete>
+
+    <delete id="deleteProgramFileListByProgramId" parameterType="string">
+        delete from bc_program_files where programId = #{programId}
+    </delete>
+
+    <delete id="deleteProgramContentByProgramId" parameterType="string">
+        delete from bc_program_content where programId = #{programId}
+    </delete>
+
+    <delete id="deleteProgramStrategyByProgramId" parameterType="string">
+        delete from bc_program_strategy where programId = #{programId}
+    </delete>
+
+    <delete id="deleteProgramTimeByStrategyId" parameterType="string">
+        delete from bc_program_time where strategyId = #{strategyId}
+    </delete>
+
+    <delete id="deleteProgramBaseInfoById" parameterType="string">
+        delete from bc_program where programId = #{programId}
+    </delete>
+
+    <update id="updateProgramContentInfo" parameterType="cn.comtom.domain.core.program.info.ProgramContentInfo">
+       update bc_program_content set id = #{id}
+       <if test="content != null and content != ''">
+           ,content  = #{content}
+       </if>
+        <if test="secondLength != null">
+            ,secondLength  = #{secondLength}
+        </if>
+        where id = #{id}
+    </update>
+
+    <update id="updateProgramStrategyInfo" parameterType="cn.comtom.domain.core.program.info.ProgramStrategyInfo">
+       update bc_program_strategy set strategyId = #{strategyId}
+           ,strategyType  = #{strategyType}
+           ,playTime  = #{playTime}
+           ,startTime  = #{startTime}
+           ,overTime  = #{overTime}
+           ,weekMask  = #{weekMask}
+        where strategyId = #{strategyId}
+    </update>
+
+    <update id="auditProgramInfo" parameterType="cn.comtom.domain.core.program.request.ProgramAuditRequest">
+       update bc_program set auditResult = #{auditResult}
+        <if test="auditOpinion != null and auditOpinion != ''">
+           ,auditOpinion  = #{auditOpinion}
+        </if>
+           ,auditTime  = #{auditTime}
+           ,auditUser  = #{auditUser}
+        <if test="state != null and state != ''">
+           ,state  = #{state}
+        </if>
+        where programId = #{programId}
+    </update>
+
+
+    <select id="getProgramInfoById" resultMap="programInfoMap" parameterType="string">
+        select * from bc_program where programId = #{programId}
+    </select>
+
+    <select id="getProgramStrategyByProgramId" resultMap="programStrategyMap" parameterType="string">
+        select * from bc_program_strategy where programId = #{programId}
+    </select>
+
+    <select id="getProgramAreaByProgramId" resultType="cn.comtom.domain.core.program.info.ProgramAreaInfo" parameterType="string">
+        select a.*,r.areaName from bc_program_area a
+        left join sys_region_area r on r.areaCode = a.areaCode
+        where programId = #{programId}
+    </select>
+
+    <select id="getProgramFilesByProgramId" resultType="cn.comtom.domain.core.program.info.ProgramFilesInfo" parameterType="string">
+        select * from bc_program_files where programId = #{programId}
+    </select>
+
+    <select id="getProgramContentByProgramId" resultType="cn.comtom.domain.core.program.info.ProgramContentInfo" parameterType="string">
+        select * from bc_program_content where programId = #{programId}
+    </select>
+
+    <select id="getProgramTimeByStrategyId" resultType="cn.comtom.domain.core.program.info.ProgramTimeInfo" parameterType="string">
+        select * from bc_program_time where strategyId = #{strategyId}
+    </select>
+
+    <select id="getProgramInfoList" resultType="cn.comtom.domain.core.program.info.ProgramInfo" parameterType="string">
+        select * from bc_program where 1 = 1
+        <if test="programType != null">
+          and programType = #{programType}
+        </if>
+        <if test="programType == null">
+          and programType != 3
+        </if>
+        <if test="programName != null and programName !='' ">
+            and programName like CONCAT('%', #{programName}, '%')
+        </if>
+        <if test="programLevel != null">
+            and programLevel = #{programLevel}
+        </if>
+        <if test="contentType != null">
+            and contentType = #{contentType}
+        </if>
+        <if test="auditResult != null">
+            and auditResult = #{auditResult}
+        </if>
+        <if test="state != null">
+            and state = #{state}
+        </if>
+        <if test="ebmEventType != null and ebmEventType != '' ">
+            and ebmEventType = #{ebmEventType}
+        </if>
+        <if test="ebrName != null and ebrName!= ''">
+            and ebrName  like CONCAT('%', #{ebrName}, '%')
+        </if>
+        <if test="ebrId != null and ebrId !='' ">
+            and ebrId = #{ebrId}
+        </if>
+        <if test="programId != null and programId !='' ">
+            and programId = #{programId}
+        </if>
+
+        <if test="createUser != null and createUser !='' ">
+            and createUser = #{createUser}
+        </if>
+
+        <if test="startCreateTime != null and startCreateTime !='' ">
+            and createTime &gt;= #{startCreateTime}
+        </if>
+
+        <if test="endStartCreateTime != null and endStartCreateTime !='' ">
+            and createTime &lt;= #{endStartCreateTime}
+        </if>
+
+
+    </select>
+
+    <select id="findprogramDecomposeByDate" resultType="cn.comtom.domain.core.program.info.ProgramDecomposeInfo" parameterType="string">
+        SELECT
+        p.`programType`,p.contentType,
+        s.`programId`,s.`strategyType`,s.`playTime` AS playDate,s.`startTime` AS startDate,s.`overTime` AS endDate,s.`weekMask` ,
+        t.`startTime`,t.`overTime`,t.`durationTime`,t.`timeId`,t.dayOfMonth 
+        FROM
+        bc_program_strategy s,bc_program_time t,bc_program p
+        WHERE s.`strategyId`=t.`strategyId` AND s.`programId`=p.`programId`
+        AND p.`auditResult`='1'
+        AND IF((s.`strategyType` =1),(s.`playTime`=#{date} ),(s.`startTime`&lt;= #{date} AND s.`overTime` &gt;= #{date}))
+        AND t.`timeId` NOT IN(
+        SELECT timeId FROM bc_program_unit u WHERE u.`playDate`=#{date}
+        )
+</select>
+
+
+</mapper>

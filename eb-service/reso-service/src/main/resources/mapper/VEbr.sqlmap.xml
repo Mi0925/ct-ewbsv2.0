@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.reso.main.ebr.mapper.VEbrMapper">
+
+    <select id="listForInfoSrc"  parameterType="cn.comtom.domain.reso.ebr.request.EbrQueryRequest" resultType="cn.comtom.domain.reso.ebr.info.EbrInfo">
+(
+	SELECT
+		b.areaCode AS areaCode,
+		b.bsEbrId AS ebrId,
+		b.bsName AS ebrName,
+		b.bsState AS ebrState,
+		b.subResType AS ebrType,
+		'播出系统' AS ebrTypeName,
+		b.bsUrl AS ebrUrl,
+		b.createTime AS createTime,
+		b.latitude AS latitude,
+		b.longitude AS longitude,
+		b.population AS population,
+		b.square AS square,
+		b.updateTime AS updateTime,
+		'0000' AS ebrLevel,
+		1 AS syncFlag,
+		R.areaName AS areaName,
+		'' as contact,
+		'' as phoneNumber,
+		n.ip  as srcHost,
+		b.orgName,
+		b.orgType,
+		b.remark
+	FROM
+		bc_ebr_broadcast b
+	LEFT JOIN sys_region R ON R.areaCode = B.areaCode
+	LEFT JOIN sys_access_node n on n.platformId = b.bsEbrId
+	WHERE b.areaCode = #{localAreaCode}
+)
+UNION ALL
+	(
+		SELECT
+			p.areaCode AS areaCode,
+			p.psEbrId AS ebrId,
+			p.psEbrName AS ebrName,
+			p.psState AS ebrState,
+			p.subResType AS ebrType,
+			'应急广播平台' AS ebrTypeName,
+			p.psUrl AS ebrUrl,
+			p.createTime AS createTime,
+			p.latitude AS latitude,
+			p.longitude AS longitude,
+			p.population AS population,
+			p.square AS square,
+			p.updateTime AS updateTime,
+			p.platLevel AS ebrLevel,
+			P.syncFlag AS syncFlag,
+		  R.areaName AS areaName,
+			p.contact,
+			p.phoneNumber,
+			n.ip as srcHost,
+			p.orgName,
+			p.orgType,
+			p.remark
+		FROM
+			bc_ebr_platform p
+		LEFT JOIN sys_region R ON R.areaCode = P.areaCode
+		LEFT JOIN sys_access_node n on n.platformId = p.psEbrId
+		where 1=1
+		and p.areaCode in (
+			select r.parentAreaCode from sys_region r where r.areaCode= #{localAreaCode}
+			UNION ALL
+				SELECT
+					ra.areacode
+				FROM
+					sys_region_area ra
+				WHERE
+					ra.parentAreaCode = #{localAreaCode}
+			UNION all
+			SELECT #{localAreaCode} from DUAL
+		)
+	)
+UNION ALL
+	(
+	SELECT
+		'' AS areaCode,
+		b.ebrStId AS ebrId,
+		b.ebrStName AS ebrName,
+		b.stationState AS ebrState,
+		b.subResType AS ebrType,
+		'台站' AS ebrTypeName,
+		'' AS ebrUrl,
+		b.createTime AS createTime,
+		b.latitude AS latitude,
+		b.longitude AS longitude,
+		'' AS population,
+		'' AS square,
+		b.updateTime AS updateTime,
+		'0000' AS ebrLevel,
+		1 AS syncFlag,
+		'' AS areaName,
+		b.contact as contact,
+		b.phoneNumber as phoneNumber,
+		n.ip  as srcHost,
+		'' orgName,
+		'' orgType,
+		'' remark
+	FROM
+		bc_ebr_station b
+	LEFT JOIN sys_access_node n on n.platformId = b.ebrStId
+	)
+
+UNION ALL
+	(
+	SELECT
+		'' AS areaCode,
+		b.ebrAsId AS ebrId,
+		b.ebrAsName AS ebrName,
+		b.adapterState AS ebrState,
+		b.subResType AS ebrType,
+		'适配器' AS ebrTypeName,
+		b.url AS ebrUrl,
+		b.createTime AS createTime,
+		b.latitude AS latitude,
+		b.longitude AS longitude,
+		'' AS population,
+		'' AS square,
+		b.updateTime AS updateTime,
+		'0000' AS ebrLevel,
+		1 AS syncFlag,
+		'' AS areaName,
+		'' as contact,
+		'' as phoneNumber,
+		n.ip  as srcHost,
+		'' orgName,
+		'' orgType,
+		'' remark
+	FROM
+		bc_ebr_adapter b
+	LEFT JOIN sys_access_node n on n.platformId = b.ebrAsId
+	)
+    </select>
+
+
+
+</mapper>

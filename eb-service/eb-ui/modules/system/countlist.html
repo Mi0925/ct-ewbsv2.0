@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>应急广播平台-评估统计</title>
+<style type="text/css">
+.countlist {
+    height: 60%;
+    -webkit-user-select: none;
+    width: 82%;
+    /*background: url(./images/countList.jpg);
+    background-size:cover;*/
+}
+.countlisting {
+    height: 60%;
+    -webkit-user-select: none;
+    margin-top: 330px;
+    margin-bottom: 330px;
+}
+
+.bk {
+	margin: 0 auto;
+	text-align: center;
+}
+.loading {
+	margin: 0 auto;
+	text-align: center;
+}
+</style>
+</head>
+<body >
+	<div class="bk">
+		<img id="countImg" class="countlisting" src="./images/loding.gif">
+	</div>
+</body>
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script type="text/javascript">
+setTimeout(function(){ 
+	$("#countImg").removeClass();
+	$("#countImg").attr('src','./images/countList.jpg');
+	$("#countImg").addClass("countlist");
+	$("#countImg").fadeIn();
+}, 1500);
+</script>
+</html>

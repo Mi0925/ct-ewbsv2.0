@@ -1,0 +1,59 @@
+dynamic:
+  host-ip: 192.168.111.116
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    sky:
+      type: com.zaxxer.hikari.HikariDataSource
+      driver-class-name: com.mysql.jdbc.Driver
+      initialize: true
+      name: sky
+      jdbc-url: jdbc:mysql://${dynamic.host-ip}/cz_eb_dev?zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+      username: root
+      password: 123456
+  rabbitmq:
+    host: ${dynamic.host-ip}
+    port: 5672
+    virtual-host: eb
+    username: comtom
+    password: comtom
+  redis:
+    host: ${dynamic.host-ip}
+    port: 6379
+    database: 1
+    pool:
+      max-total: 200
+      maxTotal: 200
+      maxWaitMillis: 10000
+      testOnBorrow: true
+      testOnReturn: true
+      timeout: 100
+    password: 123456
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://admin:123456@${dynamic.host-ip}:9999/eureka/
+file:
+  ftp:
+    hostname: ${dynamic.host-ip}
+    port: 21
+    username: admin
+    password: admin
+baidu:
+  tts:
+    appid: 15977493
+    apikey: QzfRhA7iCpGiqQVwluYOyjVX
+    secretkey: ziNPW5GtFUM1CaXGbUWEmImVwwYfhh4j
+fdfs:
+  connect-timeout: 1501  #连接超时时间
+  so-timeout: 601       #读取时间
+  thumb-image:         #生成缩略图参数
+    width: 150
+    height: 150
+  tracker-list: ${dynamic.host-ip}:22122
+  pool:
+    max-total: 1000
+    max-wait-millis: 10000
+    min-idle-per-key: 10
+    max-idle-per-key: 20
+    max-total-per-key: 50

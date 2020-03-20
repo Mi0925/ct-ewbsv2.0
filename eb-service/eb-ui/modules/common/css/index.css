@@ -1,0 +1,171 @@
+html,body{
+    height:100%;
+    margin:0;
+    padding:0;
+    overflow: hidden;
+}
+.container-div{min-height:100%;}
+.main-div{padding-bottom:60px;display: block;}/* main的padding-bottom值要等于或大于footer的height值 */
+.footer-div{height:60px;margin-top:-60px;}/* margin-top（负值的）高度等于footer的height值 */
+
+.navbar-right{
+    margin-right: 40px;
+    margin-top: 80px;
+}
+
+.navbar-left li{
+    display: inline-block;
+    pcolor: white;
+    font-weight: 600;
+    color: white;
+}
+.navbar-right li{
+    display: inline-block;
+}
+
+.navbar-right li >a{
+    padding-right: 40px;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+}
+
+.navbar-left{
+    margin-left: 40px;
+    margin-top: 80px;
+}
+
+.navbar-center{
+    text-align: center;
+}
+
+.content-bg{
+    background:url("../img/bg.png") no-repeat;
+    /* background-size: 100%; */
+}
+
+.titleSpan{
+    text-align: center;
+    font-size: 30px;
+    font-family: "Microsoft YaHei";
+    color: white;
+    height: 70px;
+    line-height: 70px;
+}
+
+.titleDiv{
+    text-align: center;
+    background:url("../img/topBg.png") no-repeat center ;
+    /*width: 829px;*/
+    height: 110px;
+    margin: auto;
+}
+.span40{
+    padding-right: 40px;
+}
+
+.footer{
+    text-align: center;
+    height: 60px;
+    line-height: 60px;
+    font-family: "Microsoft YaHei";
+    color: white;
+    font-size: 14px;
+}
+
+.footer a{
+    pointer-events:none;
+}
+
+.float-menu-li {
+    position: absolute;
+    z-index: 1;
+}
+.position-a{
+    color: #1cc09f;
+}
+.float-menu-parent{
+    width: 100%;
+    height: auto;
+
+}
+.float-menu{
+    float: right;
+    width: 320px;
+    height: 720px;
+    background:url("../img/float-menu-frame.png") no-repeat right  ;
+    background-size: 100% 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: absolute;
+    z-index: 1;
+    display: none;
+   /* background-color: #1a7bb9;*/
+
+}
+.float-menu-list{
+    width: 100%;
+    height: auto;
+    margin-left: 4px;
+    margin-top: 0;
+}
+.float-menu-title{
+    width: 100%;
+    height: 60px;
+    color: #1cc09f;
+    line-height: 60px;
+    text-align: center;
+}
+.float-menu-first{
+    width: 100%;
+    min-height: 60px;
+    color: #1cc09f;
+    line-height: 60px;
+    text-align: center;
+    font-size: 18px;
+}
+.bg-title{
+    background:url("../img/float-menu-title.png") no-repeat left  ;
+    background-size: 100% 100%;
+
+}
+
+.bg-first-menu{
+    background:url("../img/first-float-menu.png") no-repeat left  ;
+    background-size: 100% 100%;
+
+}
+.second-float-menu{
+    width: 100%;
+    min-height: 60px;
+    color: #eeeeee;
+    line-height: 60px;
+    text-align: center;
+    font-size: 16px;
+
+}
+.second-float-menu:hover{
+    background-color: rgba(236,255,255,0.1);
+
+}
+.cursor-pointer{
+    cursor: pointer;
+}
+.first-menu-select{
+    background-color: rgba(218,255,255,0.3);
+}
+.float-sub-menu{
+    display: none;
+}
+.menu-tag{
+    float: left;
+}
+.menu-tag i{
+    height: 60px;
+    width: 60px;
+    line-height: 60px;
+}
+.go-home{
+    display: none;
+}
+

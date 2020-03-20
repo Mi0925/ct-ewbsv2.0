@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+<title>应急广播平台</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link href="../common/css/eb-right-float.css" rel="stylesheet">
+<link href="../common/css/eb-common.css" rel="stylesheet">
+<link href="css/eb-tree.css" rel="stylesheet">
+<link href="css/role.css" rel="stylesheet">
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" >
+	<div class="main-content">
+		<div class="page-content" >
+
+
+		<div class="float-div" id="float-div">
+			<div class="right-float-div" style="width: 360px;">
+				<div class="left-sidebar" onclick="leftSidebarClick()"></div>
+					<div  class="detail-content">
+						<div class="detail-head">
+							<div class="detail-title">
+								<div class="title-span">
+									<i class="fa fa-home"></i>
+									{{roleName}}
+								</div>
+							</div>
+							<div class="detail-btn-group">
+								<div type="button"  @click="sureGrant()" class="detail-btn" style="line-height: 26px;height: 30px;">
+									<i class="fa fa-check"></i>
+									<span>确定</span>
+								</div>
+							</div>
+						</div>
+						<div class="detail-body">
+							<div id="resTree" style="padding-right: 2px;"></div>
+						</div>
+					</div>
+			</div>
+			<i class="fa fa-angle-double-right" style="width: 60px;height: 120px;"></i>
+		</div>
+
+		<div style="padding-bottom: 60px;">
+				<div class="pull-left">
+					<button v-if="permissions['sys:role:add']" class="eb-btn-operation" @click="initLayer('add')" /><i class="fa fa-save"></i>&nbsp;新增角色</button>
+				</div>
+
+				<div class="pull-right">
+					<form id="form-search-curve" class="form-inline" action="javascript:void(0);" >
+
+						<div class="form-group">
+							<div class="input-group input-group-sm">
+								<label class="control-label eb-label-text">角色名称</label>
+								<input  class="input-date eb-input"  v-model="req.name"/>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="input-group input-group-sm">
+								<button class="eb-btn-search" type="button" onclick="reload()">
+									<i class="fa fa-search"></i> &nbsp; 查 询
+								</button>
+							</div>
+						</div>
+
+					</form>
+				</div>
+			</div>
+
+			<div class="jqGridDiv">
+				<div class="jqGridDiv2" >
+					<table id="jqGrid"></table>
+					<div id="jqGridPager" class="jqGridPager"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div  id="roleAddLayer" style="display: none;" class="eb-layer" >
+		<div class="eb-layer-title">
+			{{title}}
+		</div>
+		<form class="form-horizontal m-t" id="user_form" method="post" v-if="roleAddShow">
+			<div class="form-group mg-h-30">
+				<label class="col-sm-4 control-label eb-label-text"><span class="e-required"> *</span>角色名称：</label>
+				<div class="col-sm-7">
+					<input  v-model="roleInfo.name" class="form-control eb-input-text" type="text" value="" maxlength="100" >
+				</div>
+			</div>
+			<div class="form-group mg-h-30">
+				<label class="col-sm-4 control-label eb-label-text"><span class="e-required"> *</span>角色类型：</label>
+				<div class="col-sm-7">
+					<select  class="eb-select" v-model="roleInfo.type" style="font-size: 14px;">
+						<div v-if="pageEnum != null">
+							<option v-for="p in pageEnum" v-if="p.dictGroupCode == 'ROLE_TYPE_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+						</div>
+					</select>
+				</div>
+			</div>
+			<div class="form-group mg-h-30">
+				<label class="col-sm-4 control-label eb-label-text">角色描述：</label>
+				<div class="col-sm-7">
+					<input id="password2"  v-model="roleInfo.description" class="form-control eb-input-text"  value="" maxlength="200" >
+				</div>
+			</div>
+
+			<div class="form-group mg-h-30" style="text-align: center">
+				<button class="eb-btn-search" type="button" @click="closeLayer()">
+					<i class="fa fa-close"></i> &nbsp; 取消
+				</button>
+
+				<button class="eb-btn-search" type="button" @click="save">
+					<i class="fa fa-check"></i> &nbsp; 确认
+				</button>
+			</div>
+		</form>
+		
+		<form class="form-horizontal m-t"  method="post" v-if="roleUpdateShow">
+			<input type="hidden"  v-model="roleInfo.id" value="">
+			<div class="form-group mg-h-30">
+				<label class="col-sm-4 control-label eb-label-text"><span class="e-required"> *</span>角色名称：</label>
+				<div class="col-sm-7">
+					<input  v-model="roleInfo.name"  class="form-control eb-input-text" type="text" value="" maxlength="100" >
+				</div>
+			</div>
+
+			<div class="form-group mg-h-30">
+				<label class="col-sm-4 control-label eb-label-text"><span class="e-required"> *</span>角色类型：</label>
+				<div class="col-sm-7">
+					<select  class="eb-select" v-model="roleInfo.type" disabled>
+						<div v-if="pageEnum != null">
+							<option v-for="p in pageEnum" v-if="p.dictGroupCode == 'ROLE_TYPE_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+						</div>
+					</select>
+				</div>
+			</div>
+			<div class="form-group mg-h-30">
+				<label class="col-sm-4 control-label eb-label-text">角色描述：</label>
+				<div class="col-sm-7">
+					<input  v-model="roleInfo.description" class="form-control eb-input-text" value="" maxlength="200" >
+				</div>
+			</div>
+			<div class="form-group mg-h-30" style="text-align: center">
+				<button class="eb-btn-search" type="button" @click="closeLayer()">
+					<i class="fa fa-close"></i> &nbsp; 取消
+				</button>
+
+				<button class="eb-btn-search" type="button" @click="update()">
+					<i class="fa fa-check"></i> &nbsp; 确认
+				</button>
+			</div>
+		</form>
+	</div>
+
+
+</div>
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/bootstrap-treeview/js/bootstrap-treeview.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../js/common.js"></script>
+<script src="js/sysRole.js"></script>
+<script src="js/tree.js"></script>
+</body>
+</html>

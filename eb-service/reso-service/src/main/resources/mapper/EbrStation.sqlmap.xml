@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.reso.main.ebr.mapper.EbrStationMapper">
+
+    <select id="getListWithXml" resultType="cn.comtom.domain.reso.ebr.info.EbrStationInfo"
+            parameterType="cn.comtom.domain.reso.ebr.request.EbrStationPageRequest">
+        select * from (
+        select t.*,p.psEbrName as psEbrName from bc_ebr_station t
+        left join bc_ebr_platform p on p.psEbrId = t.ebrPsId
+        where 1=1
+        <if test="ebrStName != null and ebrStName != ''">
+            and t.ebrStName like CONCAT('%',#{ebrStName}, '%')
+        </if>
+        <if test="ebrPsId != null and ebrPsId != ''">
+            and t.ebrPsId = #{ebrPsId}
+        </if>
+        <if test="syncFlag != null and syncFlag != ''">
+            and t.syncFlag = #{syncFlag}
+        </if>
+        <if test="statusSyncFlag != null and statusSyncFlag != ''">
+            and t.statusSyncFlag = #{statusSyncFlag}
+        </if>
+        <if test="stationState != null and stationState != ''">
+            and t.stationState = #{stationState}
+        </if>
+        ) t1 where 1=1
+
+        <if test="parentAreaCode != null and parentAreaCode != ''">
+            and exists (select 1 from sys_region_area a where a.parentAreaCode like CONCAT(#{parentAreaCode}, '%') and
+            a.areaCode = t1.areaCode
+            UNION ALL
+            SELECT
+            1
+            FROM
+            sys_region_area a
+            WHERE
+            a.areaCode =#{parentAreaCode}
+            AND a.areaCode = t1.areaCode
+            )
+        </if>
+        <if test="childAreaCode != null and childAreaCode != ''">
+            and t1.areaCode = (select r.parentAreaCode from sys_region r where r.areaCode=#{childAreaCode} )
+        </if>
+
+    </select>
+
+    <select id="findListByStationIds" resultType="cn.comtom.domain.reso.ebr.info.EbrStationInfo"
+            parameterType="java.util.List">
+        select * from bc_ebr_station where ebrStId in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+</mapper>

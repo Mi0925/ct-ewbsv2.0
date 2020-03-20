@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.reso.main.ebr.mapper.VEbrGisMapper">
+
+    <resultMap id="BaseResultMap" type="cn.comtom.domain.reso.ebr.info.EbrGisInfo" >
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="ebrType" property="ebrType" jdbcType="VARCHAR" />
+        <result column="latitude" property="latitude" jdbcType="VARCHAR" />
+        <result column="longitude" property="longitude" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="getEbrGisByPage"  resultMap="BaseResultMap"
+            parameterType="cn.comtom.domain.reso.ebr.request.EbrGisPageRequest">
+        select * from v_bc_ebr_gis where 1=1 and latitude is not null and longitude is not null and latitude!='' and longitude!=''
+        <if test="status != null ">
+            and status = #{status}
+        </if>
+        <if test="relatedPsEbrId != null and relatedPsEbrId!=''">
+            and relatedPsEbrId = #{relatedPsEbrId}
+        </if>
+        <if test="ebrType != null and ebrType!=''">
+            and ebrType = #{ebrType}
+        </if>
+
+    </select>
+
+    <select id="getEbrGisStatusCount"  resultType="cn.comtom.domain.reso.ebr.info.EbrstatusCount"
+            parameterType="cn.comtom.domain.reso.ebr.request.EbrGisPageRequest">
+        SELECT COUNT(1) AS total,STATUS as status,ebrType FROM v_bc_ebr_gis  where 1=1 and latitude is not null and longitude is not null and latitude!='' and longitude!=''
+        <if test="status != null ">
+            and status = #{status}
+        </if>
+        <if test="relatedPsEbrId != null and relatedPsEbrId!=''">
+            and relatedPsEbrId = #{relatedPsEbrId}
+        </if>
+        <if test="ebrType != null and ebrType!=''">
+            and ebrType = #{ebrType}
+        </if>
+        GROUP BY STATUS ,ebrType
+    </select>
+
+
+
+
+
+</mapper>

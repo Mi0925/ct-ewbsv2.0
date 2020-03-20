@@ -1,0 +1,93 @@
+.eb-radio-span{
+    color: white;
+    margin-right: 30px;
+}
+#program-time-table td{
+    text-align: center;
+    padding: 0;
+}
+.program-time-add-btn{
+    background-color: transparent;
+    background: url(../../common/img/search.png) no-repeat center;
+    background-size: 100% 100%;
+    border: 0px;
+    width: 80px;
+    height: 40px;
+    color: #00ffff;
+    font-size: 16px;
+}
+.program-file-upload-btn{
+    background-color: transparent;
+    background: url(../../common/img/search.png) no-repeat center;
+    background-size: 100% 100%;
+    border: 0px;
+    width: 150px;
+    height: 40px;
+    color: #00ffff;
+    font-size: 16px;
+}
+.file-tree{
+    width: 40%;
+    float: left;
+}
+.file-chose-right{
+    width: 40%;
+    float: right;
+}
+.file-chose-div{
+    height: 400px;
+}
+.file-chose-main{
+    width: 90%;
+    padding: 0 30px ;
+}
+.area-iframe{
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0px 50px;
+}
+.area-title{
+    height: 7%;
+    margin-left: 20px;
+    line-height: 50px;
+}
+.area-div{
+   /* border: 1px #1cc09f solid;*/
+    width: 100%;
+    height: 350px;
+    overflow: auto;
+}
+.node_name{
+    font-size: 14px;
+}
+/*.ztree li span.button.chk.checkbox_true_full{
+    background: url(../../common/img/check.png);
+}
+.ztree li span.button.chk.checkbox_false_full {
+    background: url(../../common/img/no-check.png);
+}*/
+
+.program-detail-editor{
+    padding: 30px;
+    height: 80%;
+}
+
+.program-add-disabled{
+    background-color: transparent;
+    background: url(../../scheme/img/unSelect-border.png) no-repeat;
+    background-size: 100% 100%;
+    border: 0px;
+    width: 80px;
+    height: 40px;
+    color: rgba(153,153,153,0.5);
+    font-size: 16px;
+}
+.btn_disabled{
+    background-color: transparent;
+    background: url(../../scheme/img/unSelect-border.png) no-repeat;
+    background-size: 100% 100%;
+    border: 0px;
+    color: rgba(153,153,153,0.5);
+    font-size: 16px;
+}

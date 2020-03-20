@@ -1,0 +1,255 @@
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>应急广播平台</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="../../plugins/bootstrap/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../../plugins/font-awesome/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="../../plugins/ztree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <link href="../../modules/common/css/eb-common.css" rel="stylesheet">
+    <link href="../../modules/common/css/index.css" rel="stylesheet">
+
+</head>
+
+
+<body class="content-bg">
+    <input type="hidden" value="" id="sysResourceId" >
+    <div class="container-div" id="vueZone" >
+        <div class="header-div">
+            <div class="col-lg-3">
+                <ul class="navbar-left">
+                    <li >
+                        <span>欢迎您：<span v-if="user != null">{{user.userName}} </span></span>
+                    </li>
+                    <span class="span40"></span>
+                    <li >
+                        <span id="clock">2018-12-26 14:44:00</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-6 navbar-center" >
+                <div class="titleDiv">
+                    <div>
+                        <span class="titleSpan">{{indexTitle}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <ul class="navbar-right">
+
+                    <li :style="positionShow ? '' : 'display:none;'" class="current-position">
+                        <a href="" style="color: #00F7DE">
+                            <i class="glyphicon glyphicon-map-marker"></i> &nbsp;位置：<span v-if="sysResource != null">{{sysResource.name}}</span>
+                        </a>
+                        <div class="float-menu " >
+                            <div class="float-menu-list">
+                                <div >
+                                    <div style="background-color: #35a5cb;color: #eeeeee;margin-top: 5px;" class="float-menu-first bg-first-menu cursor-pointer" @click="toMain()">
+
+                                        <div class="menu-tag">
+                                            <i class="fa fa-mail-reply"></i>
+                                        </div>
+                                        <div style="margin-right: 60px;">
+                                            控制台
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div v-for="menu in menus">
+                                    <div class="float-menu-first bg-first-menu cursor-pointer" v-bind:id="menu.id" @click="menuClick(menu.id)">
+                                        <div class="menu-tag">
+                                            <i class="fa fa-caret-right"></i>
+                                        </div>
+                                        <div style="margin-right: 60px;">
+                                            {{menu.name}}
+                                        </div>
+                                    </div>
+
+
+                                    <div v-if="menu !=null && menu.subList != null" class="float-sub-menu cursor-pointer">
+                                        <div v-for="submenu in menu.subList" class="second-float-menu cursor-pointer" v-bind:id="submenu.id"
+                                             @click="subMenuClick(submenu.url,submenu.id)">
+                                            <div>
+                                                {{submenu.name}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </li>
+                    <!--<li class="go-home" >-->
+                        <!--<a href="index.html" >-->
+                            <!--<i class="fa fa-home"></i> &nbsp;控制台-->
+                        <!--</a>-->
+                    <!--</li>-->
+                    <li v-if="userSetShow" class="user-setting">
+                        <a  href="index.html" >
+                            <i class="fa fa-cog"></i> &nbsp;个人设置
+                        </a>
+                    </li>
+                    <li @click="logout">
+                        <a href="" >
+                            <i class="fa fa-sign-out"></i> &nbsp;退出系统
+                        </a>
+                    </li>
+
+
+                </ul>
+
+            </div>
+        </div>
+
+
+
+
+        <!--核心页面，嵌入iframe-->
+        <div class="main-div" id="mainDiv">
+            <iframe id="mainIframe" name="mainIframe" :src="iframeSrc" frameborder="0" width="100%" height="100%;" style="overflow: hidden"></iframe>
+        </div>
+
+
+        <div class="footer-div">
+            <div class="footer">
+                <div>
+                    <p>{{footerText}}</p>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div  id="ebrLayer" style="display: none;" class="eb-layer" >
+            <div class="eb-layer-title">
+                初始化本级平台
+            </div>
+            <form class="form-horizontal m-t" id="user_form" method="post"  >
+
+                <div class="form-group mg-h-30">
+                    <label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>平台级别：</label>
+                    <div class="col-sm-4">
+                        <select  class="eb-select" v-model="ebrInfo.platLevel">
+                            <option value="" > 请选择</option>
+                            <div v-if="pageEnum != null">
+                                <option v-for="p in pageEnum" v-if="p.dictGroupCode == 'RES_LEVEL_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+                            </div>
+                        </select>
+                    </div>
+                    <label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>平台名称：</label>
+                    <div class="col-sm-4">
+                        <input id="ebrName" v-model="ebrInfo.psEbrName"  class="form-control eb-input-text" type="text" value="">
+                    </div>
+                    <!--<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>信息源Id：</label>
+                    <div class="col-sm-4" v-if="addLayer">
+                        <input id="ebrId" v-model="ebrInfo.ebrId"  class="form-control eb-input-text" type="text" value="">
+                    </div>
+                    <div class="col-sm-4" v-if="!addLayer">
+                        <input id="ebrId1" v-model="ebrInfo.ebrId" disabled class="form-control eb-input-text" type="text" value="">
+                    </div>-->
+
+                </div>
+
+                <div class="form-group mg-h-30">
+                    <label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>单位类型：</label>
+                    <div class="col-sm-4">
+                        <select  class="eb-select" v-model="ebrInfo.orgType">
+                            <option value="" >请选择 </option>
+                            <div v-if="pageEnum != null">
+                                <option v-for="p in pageEnum" v-if="p.dictGroupCode == 'ORG_TYPE_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+                            </div>
+                        </select>
+                    </div>
+                    <label class="col-sm-2 control-label eb-label-text">单位名称：</label>
+                    <div class="col-sm-4">
+                        <input id="orgName" v-model="ebrInfo.orgName"  class="form-control eb-input-text" type="text" value="">
+                    </div>
+                </div>
+
+                <div class="form-group mg-h-30" >
+                    <label class="col-sm-2 control-label eb-label-text">联系人：</label>
+                    <div class="col-sm-4">
+                        <input id="contact" v-model="ebrInfo.contact"  class="form-control eb-input-text" type="text" value="">
+                    </div>
+                    <label class="col-sm-2 control-label eb-label-text">联系电话：</label>
+                    <div class="col-sm-4">
+                        <input id="phoneNumber" v-model="ebrInfo.phoneNumber"  class="form-control eb-input-text" type="text" value="">
+                    </div>
+                </div>
+
+                <div class="form-group mg-h-30">
+                   <!-- <label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>信息来源地址：</label>
+                    <div class="col-sm-4">
+                        <input id="srcHost" v-model="ebrInfo.srcHost"  class="form-control eb-input-text" type="text" value="">
+                    </div>-->
+                    <label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>平台URL：</label>
+                    <div class="col-sm-4">
+                        <input id="ebrUrl" v-model="ebrInfo.psUrl"  class="form-control eb-input-text" type="text" value="">
+                    </div>
+                    <label class="col-sm-2 control-label eb-label-text">备注：</label>
+                    <div class="col-sm-4">
+                        <input id="remark" v-model="ebrInfo.remark"  class="form-control eb-input-text" type="text" value="">
+                    </div>
+                </div>
+                <div class="form-group mg-h-30">
+                    <label class="col-sm-2 control-label eb-label-text">平台经度：</label>
+                    <div class="col-sm-4">
+                        <input id="longitude" v-model="ebrInfo.longitude"  class="form-control eb-input-text" type="text" value="">
+                    </div>
+                    <label class="col-sm-2 control-label eb-label-text">平台纬度：</label>
+                    <div class="col-sm-4">
+                        <input id="latitude" v-model="ebrInfo.latitude"  class="form-control eb-input-text" type="text" value="">
+                    </div>
+                </div>
+        <!--        <div class="form-group mg-h-30">
+                    <label class="col-sm-2 control-label eb-label-text">备注：</label>
+                    <div class="col-sm-4">
+                        <input id="remark" v-model="ebrInfo.remark"  class="form-control eb-input-text" type="text" value="">
+                    </div>
+                </div>-->
+
+
+                <div class="form-group mg-h-30" style="text-align: center">
+                    <!-- <button class="eb-btn-search" type="button" @click="closeLayer()">
+                         <i class="fa fa-close"></i> &nbsp; 取消
+                     </button>-->
+
+                    <button class="eb-btn-search" type="button" @click="savePlatformInfo">
+                        <i class="fa fa-check"></i> &nbsp; 保存
+                    </button>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+
+    <div id="initAreaLayer"  class="eb-layer" >
+        <div class="eb-layer-title">
+            区域初始化
+        </div>
+
+        <div  id="areaTree" style="margin-left: 30px;height: 420px;overflow-y: auto;" class="ztree"></div>
+
+
+        <button class="eb-btn-search" type="button" onclick="sureInitArea()" style="position:absolute; right:20px; bottom:20px;">
+            <i class="fa fa-check"></i> &nbsp; 确定
+        </button>
+    </div>
+
+
+
+
+</body>
+<script src="../../plugins/jquery/jquery.min.js?v=2.1.4"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../modules/common/js/index.js"></script>
+
+</html>

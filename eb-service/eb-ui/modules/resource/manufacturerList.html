@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+<title>应急广播平台</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link href="../common/css/eb-common.css" rel="stylesheet">
+<link href="../system/css/user.css" rel="stylesheet">
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" >
+	<div class="main-content">
+		<div class="page-content" >
+
+			<div style="padding-bottom: 60px;">
+				<div class="pull-left">
+					<button v-if="permissions['sys:user:add']" class="eb-btn-operation"  @click="add()"/><i class="fa fa-save"></i>&nbsp;新增厂商</button>
+				</div>
+
+				<div class="pull-right">
+					<form id="form-search-curve" class="form-inline" action="javascript:void(0);" >
+						<div class="form-group">
+							<div class="input-group input-group-sm">
+								<label class="control-label eb-label-text">单位名称</label>
+								<input  class="input-date eb-input"  v-model="req.companyName"/>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="input-group input-group-sm">
+								<button class="eb-btn-search" type="button" onclick="reload()">
+									<i class="fa fa-search"></i> &nbsp; 查 询
+								</button>
+							</div>
+						</div>
+
+					</form>
+				</div>
+			</div>
+
+			<div class="jqGridDiv">
+				<div class="jqGridDiv2" >
+					<table id="jqGrid"></table>
+					<div id="jqGridPager" class="jqGridPager"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div  id="userLayer" style="display: none;" class="eb-layer" >
+		<div class="eb-layer-title">
+			{{title}}
+		</div>
+		<form class="form-horizontal m-t" id="user_form" method="post" v-if="userAddShow">
+			<input type="hidden" id="userId" name="id" v-model="userInfo.id"  value="">
+			<div class="form-group mg-h-30">
+				<label class="col-sm-5 control-label eb-label-text"><span class="e-required"> *</span>单位名称：</label>
+				<div class="col-sm-7">
+					<input id="username" v-model="userInfo.companyName" class="form-control eb-input-text" type="text" value="" placeholder="请输入单位名称">
+				</div>
+			</div>
+			<div class="form-group mg-h-30">
+				<label class="col-sm-5 control-label eb-label-text"><span class="e-required"> *</span>主要联系人姓名：</label>
+				<div class="col-sm-7">
+					<input id="password1" v-model="userInfo.mainContactName"  class="form-control eb-input-text" type="text" value="" placeholder="请输入主要联系人姓名">
+				</div>
+			</div>
+			<div class="form-group mg-h-30">
+				<label class="col-sm-5 control-label eb-label-text"><span class="e-required"> *</span>主要联系人电话：</label>
+				<div class="col-sm-7">
+					<input id="password2"  v-model="userInfo.mainContactTel" class="form-control eb-input-text" type="text" value="" placeholder="请输入主要联系人电话">
+				</div>
+			</div>
+			<div class="form-group mg-h-30">
+				<label class="col-sm-5 control-label eb-label-text"><span class="e-required"> *</span>技术人员姓名：</label>
+				<div class="col-sm-7">
+					<input id="realName" v-model="userInfo.technologyName" class="form-control eb-input-text" value="" placeholder="请输入技术人员姓名">
+				</div>
+			</div>
+			<div class="form-group mg-h-30">
+				<label class="col-sm-5 control-label eb-label-text"><span class="e-required"> *</span>技术人员电话：</label>
+				<div class="col-sm-7">
+					<input id="realName" v-model="userInfo.technologyTel" class="form-control eb-input-text" value="" placeholder="请输入技术人员电话">
+				</div>
+			</div>
+			<div class="form-group mg-h-30" style="text-align: center">
+				<button class="eb-btn-search" type="button" @click="closeLayer()">
+					<i class="fa fa-close"></i> &nbsp; 取消
+				</button>
+
+				<button class="eb-btn-search" type="button" @click="save">
+					<i class="fa fa-check"></i> &nbsp; 确认
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../js/common.js"></script>
+<script src="js/manufacturerlist.js"></script>
+</body>
+</html>

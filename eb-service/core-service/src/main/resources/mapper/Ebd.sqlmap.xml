@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.core.main.ebd.mapper.EbdMapper">
+
+    <select id="queryList" resultType="cn.comtom.domain.core.ebd.info.EbdInfo">
+        SELECT
+        ebd.*,
+        vpl.ebrName AS psEbrName,
+        v.ebrName as destEbrName,
+        fi.file_size AS fileSize,
+        dict.dict_value as ebdTypeName
+        FROM bc_ebd ebd
+        LEFT JOIN
+        v_bc_ebr_info vpl ON ebd.ebdSrcEbrId=vpl.ebrId
+        LEFT JOIN
+        v_bc_ebr_info v ON ebd.ebdDestEbrId=v.ebrId
+        LEFT JOIN
+        bc_origin_file_info fi ON ebd.fileId=fi.file_id
+        left join
+        sys_dict dict on ebd.ebdType=dict.dict_key and dict.dict_group_code=#{dictGroupCode}
+        <where>
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(ebdId)">
+              And ebd.ebdId like concat('%',#{ebdId},'%')
+            </if>
+
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(ebdSrcEbrId)">
+               And ebd.ebdSrcEbrId=#{ebdSrcEbrId}
+            </if>
+
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(ebdDestEbrId)">
+                And ebd.ebdDestEbrId=#{ebdDestEbrId}
+            </if>
+
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(sendFlag)">
+                And ebd.sendFlag=#{sendFlag}
+            </if>
+
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(startReceiveTime)">
+                And ebd.ebdRecvTime &gt;=#{startReceiveTime}
+            </if>
+
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(endReceiveTime)">
+                And ebd.ebdRecvTime &lt;=#{endReceiveTime}
+            </if>
+
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(startSendTime)">
+                And ebd.ebdSendTime &gt;=#{startSendTime}
+            </if>
+
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(endSendTime)">
+                And ebd.ebdSendTime &lt;=#{endSendTime}
+            </if>
+        </where>
+        And ebd.ebdState in(2,3,4)
+        order by ebd.ebdRecvTime desc,ebd.ebdSendTime desc
+    </select>
+
+</mapper>

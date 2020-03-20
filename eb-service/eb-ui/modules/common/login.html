@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <title>应急广播系统 登录</title>
+    <link href="../../plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../plugins/font-awesome/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="../../css/style.css" rel="stylesheet">
+    <link href="css/login.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+    <script src="../../plugins/vue/vue.js"></script>
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+    <script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+    <script src="../../plugins/ztree/jquery.ztree.all.js"></script>
+    <script src="../../plugins/bootstrapvalidator/bootstrapValidator.min.js"></script>
+    <script src="../../plugins/bootstrapvalidator/language/zh_CN.js"></script>
+    <script src="../../plugins/layer/layer.js"></script>
+    <script src="../../js/common.js"></script>
+
+    <script>
+   /*     if (window.top !== window.self) {
+            window.top.location = window.location;
+        }*/
+    </script>
+</head>
+
+<body class="login-main">
+    <div class="login-panel" id="vueZone" v-cloak>
+        <div class="login-blank">
+            <div class="login-zone">
+                <div class="login-input-zone">
+                    <div class="login-title">
+                        <strong style="font-size: 25px">{{indexTitle}}</strong>
+                    </div>
+                        <div class="login-input">
+                            <i class="glyphicon glyphicon-user"></i>
+                            <img src="img/line.png" class="line-img">
+                            <input type="text" class="form-control uname" name="username" v-model="oauthData.username" id="username" placeholder="请输入您的用户名" />
+                        </div>
+                        <div class="login-input">
+                            <i class="glyphicon glyphicon-lock"></i>
+                            <img src="img/line.png" class="line-img">
+                            <input type="password" class="form-control uname" name="password" v-model="oauthData.password" placeholder="请输入您的密码" />
+                        </div>
+                        <div class="login-yzm ">
+                            <input type="text" class="form-control yanzhenma" name="captcha" v-model="captcha" placeholder="请输入验证码" />
+                            <span class="yanzhenma-span "  ><img :src="captchaSrc" style="height: 100%;width: 100%" @click="refreshCaptcha"></span>
+                        </div>
+                        <div  id="error_msg_div">
+                            <span id="errorMsg" style="color: red"> </span>
+                        </div>
+                        <div class="login-btn" @click="toLogin">登&nbsp;&nbsp;录</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script src="../../modules/common/js/login.js"></script>
+<!--<script src="../../js/login-validator.js"></script>-->
+</html>

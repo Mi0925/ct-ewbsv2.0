@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.core.main.program.mapper.ProgramUnitMapper">
+
+    <select id="getProgramUnitInfoList" parameterType="cn.comtom.domain.core.program.request.ProgramUnitPageRequest" resultType="cn.comtom.domain.core.program.info.ProgramUnitInfo">
+
+        Select u.* ,p.programName
+        from bc_program_unit u
+        left join bc_program p on p.programId = u.programId
+        where 1 = 1
+        and not exists (select 1 from bc_program_unit u1 where u1.state = 4 and u.id = u1.id)
+        <if test="playDate != null">
+            AND u.playDate = str_to_date(#{playDate} , '%Y-%m-%d')
+        </if>
+        <if test="startDate != null">
+          AND u.playDate &gt; str_to_date(#{startDate} , '%Y-%m-%d')
+        </if>
+        <if test="endDate != null">
+            AND u.playDate &lt; str_to_date(#{endDate} , '%Y-%m-%d')
+        </if>
+        <if test="year != null and year != '' ">
+          and YEAR( u.playDate) = #{year}
+        </if>
+        <if test="month != null and month != ''">
+            and MONTH( u.playDate) = #{month}
+        </if>
+    </select>
+
+</mapper>

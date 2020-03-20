@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.system.main.plan.mapper.PlanSeverityMapper">
+
+    <select id="queryList" resultType="cn.comtom.domain.system.plan.info.SysPlanSeverityInfo">
+        select
+        m.*,
+        severityDict.dict_value as severityName
+        from
+        (
+        select
+        severity.*
+        from sys_plan_severity severity
+        where
+        severity.planId=#{planId}
+        ) m
+        left join
+        sys_dict severityDict on m.severity=severityDict.dict_key and severityDict.dict_group_code=#{severityDictGroupCode}
+    </select>
+
+</mapper>

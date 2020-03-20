@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <title>应急广播系统 首页</title>
+    <link href="../../plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../plugins/font-awesome/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="../../css/style.css" rel="stylesheet">
+    <link href="css/menu.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+    <script src="../../plugins/vue/vue.js"></script>
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+    <script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+    <script src="../../plugins/ztree/jquery.ztree.all.js"></script>
+    <script src="../../plugins/bootstrapvalidator/bootstrapValidator.min.js"></script>
+    <script src="../../plugins/bootstrapvalidator/language/zh_CN.js"></script>
+    <script src="../../plugins/layer/layer.js"></script>
+    <script src="../../js/common.js"></script>
+</head>
+
+<body class="ebs-main">
+    <div class="menu-panel" id="vueZone" :style="menu_panel_width">
+        <div class="menu-zone">
+                <div class="parent-menu parent-menu-out"  v-for="menu in menus" :style="img_height">
+                    <div class="img-menu" ><img v-bind:src="menu.icon" :style="img_height"></div>
+                    <div class="sub-menus" :style="subMenus_style">
+                        <div class="sub-menu" v-for="submenu in menu.subList" @click="subMenuClick(submenu.url,submenu.id)"  :style="subMenu_style">{{submenu.name}}</div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+</body>
+<script src="../../modules/common/js/menu.js"></script>
+</html>

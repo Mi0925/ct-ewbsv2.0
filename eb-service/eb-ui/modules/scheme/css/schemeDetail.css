@@ -1,0 +1,165 @@
+.nav-btn{
+    margin-bottom: 15px;
+}
+.detail-main{
+
+}
+.detail-left{
+    width: 30%;
+    background: url("../img/left-detail-border.png") no-repeat;
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+    height: 100%;
+    float: left;
+    pointer-events:auto;
+    padding-left: 20px;
+}
+.detail-right{
+    width: 70%;
+    height: 100%;
+    float: left;
+}
+.flow-step-nav{
+
+}
+
+.flow-btn-unSelect{
+    background: url("../img/unSelect-border.png") no-repeat;
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+    color: rgba(153,153,153,0.5);
+}
+.flow-btn-select{
+    background: url("../img/select-border.png") no-repeat;
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+    color: #66ffb5;
+}
+.flow-btn-current{
+    background: url("../img/current-border.png") no-repeat;
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+    color: #00ffff;
+}
+.flow-btn-doing-sel{
+    background: url("../img/doing-sel-border.png") no-repeat;
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+    color: #66ffb5;
+}
+.flow-btn-current-sel{
+    background: url("../img/current-sel-border.png") no-repeat;
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+    color: #00ffff;
+}
+.flow-btn{
+    /*color: #66ffb5;*/
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    border: 0;
+    width: 67%;
+    float: left;
+    cursor: pointer;
+    font-size: 16px;
+}
+.flow-step-unit-1 span{
+    width: 100%;
+}
+.flow-arrow-div{
+    float: left;
+    line-height: 60px;
+    width: 33%;
+    text-align: center;
+}
+.flow-step-unit{
+    /*width: 21.3%;*/
+    float: left;
+}
+.flow-step-unit-1{
+    /*width: 14.2%;*/
+    float: left;
+}
+.sel-arrow-nav{
+    margin-left: 60px;
+    clear: both;
+    height: 18px;
+    margin-top: 20px;
+}
+.flow-step-btn-nav{
+    clear: both;
+    height: 60px;
+}
+.flow-detail{
+    width: 100%;
+    height: calc(100% - 100px);
+    background: url("../img/flow-detail-border.png") no-repeat;
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+    clear: both;
+}
+.detail-right{
+    padding-left: 40px;
+}
+.expand-btn{
+    border: #0e9aef 1px solid;
+    cursor: pointer;
+}
+.nav-arr-hide{
+    display: none;
+}
+.flow-detail-content{
+    display: none;
+    height: 100%;
+    width: 100%;
+    font-size: 16px;
+    font-family: "Microsoft YaHei";
+}
+.plan-match-detail-top{
+    width: 100%;
+    height: 130px;
+    padding: 40px;
+    color: #feffff;
+/*    border-bottom: #00ffff 1px solid;*/
+}
+
+.plan-match-detail-bottom{
+    width: 100%;
+   /* height: calc(100% - 130px);*/
+   /* border-bottom: rgba(0,255,255,0.2) 1px solid;*/
+    padding: 40px;
+    margin-top: 40px;
+}
+.audit-textarea{
+    text-align: left;
+    background-color: rgba(1,48,77,1);
+    border: #0e9aef 1px solid;
+    color: #feffff;
+    width: 100%;
+}
+
+.detail-top-label{
+    float: left;
+    margin: 0 10px;
+}
+.clear{
+    clear: both;
+}
+.l-h-40{
+    line-height: 40px;
+}
+
+.newsTops-create-detail-top{
+    width: 100%;
+    padding: 40px;
+    color: #feffff;
+    font-size: 18px;
+    font-family: "Microsoft YaHei";
+}
+
+.newsTops-create-detail-bottom{
+    width: 100%;
+    height: calc(100% - 130px);
+    padding-left: 40px;
+}

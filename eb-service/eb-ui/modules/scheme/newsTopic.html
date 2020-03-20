@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+	<title>应急广播平台-消息专题</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+	<link href="../common/css/eb-common.css" rel="stylesheet">
+	<link href="../common/css/eb-right-float.css" rel="stylesheet">
+	<link href="css/schemeDetail.css" rel="stylesheet">
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" v-cloak>
+	<div class="main-content" >
+		<div class="page-content"  >
+			<!-- 返回键导航栏 -->
+			<div class="nav-btn">
+				<button class="eb-btn-operation"  onclick="back()"  /><i class="fa fa-mail-reply"></i>&nbsp;返回</button>
+			</div>
+			<!-- 主体 -->
+			<div class="detail-main">
+				<!-- 左侧专题详情 -->
+				<div  class="detail-left right-float-div">
+					<div v-if="ebmInfo != null && ebmInfo.schemeInfoAll != null " class="detail-content" style="width: 99%">
+						<div class="detail-head">
+							<div class="detail-title">
+								<div class="title-span" >
+									<i class="glyphicon glyphicon-list"></i>
+									{{ebmInfo.ebmDispatchInfoInfo.infoTitle | filterFun}}
+								</div>
+							</div>
+						</div>
+						<div class="detail-body">
+							<table style="width: 99%;">
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 方案信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text">
+												<div class="detail-text-label">方案ID：</div>
+												<div class="detail-text-content">{{ebmInfo.schemeInfoAll.schemeId}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">方案名称：</div>
+												<div class="detail-text-content">{{ebmInfo.schemeInfoAll.schemeTitle}}</div>
+											</div>
+										</div>
+
+									</td>
+								</tr>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 预警信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text">
+												<label class="detail-text-label">信息ID：</label>
+												<div class="detail-text-content">{{ebmInfo.ebmId}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">预警标题：</label>
+												<div class="detail-text-content" :title="ebmInfo.msgTitle">{{ebmInfo.msgTitle | filterFun}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">预警类型：</label>
+												<div class="detail-text-content">{{ebmInfo.msgType | getEnumName('MSG_TYPE_DICT')}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">发布机构：</div>
+												<div class="detail-text-content">{{ebmInfo.sendName}}</div>
+											</div>
+
+											<div class="sub-detail-text">
+												<div class="detail-text-label">覆盖区域：</div>
+												<div class="detail-text-content">
+													<div class="detail-text-content" :title="areaNames">
+														<span>{{areaNames | filterAreaNamesFun }}</span>
+														<a v-if="areaNamesBtnShow" id="areaNames-btn" class="expand-btn" onclick="areaNamesBtnClick(this)">展开全部</a>
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</td>
+								</tr>
+							</table>
+
+						</div>
+					</div>
+				</div>
+				<!-- 右侧流程处理 -->
+				<div class="detail-right">
+					<!-- 流程导航 -->
+					<div v-if="flowStyles != null" class="flow-step-nav">
+						<div v-for="(flowStyle,index) in flowStyles"  :style="'width:' + (flowStyles.length != (index + 1) ? percentThree:percentTwo) + '%'"  class="flow-step-unit">
+							<div class="flow-step-btn-nav">
+								<div>
+										<span id="flow-btn-61" :flowState="flowStyle.flowState" :class="flowStyle.flowClass" class="flow-btn" @click="flowStepChange(flowStyle.flowState)" :style="'width:' + (flowStyles.length != (index + 1) ? '67':'100') + '%'">
+											{{flowStyle.flowStateName}}
+										</span>
+								</div>
+								<div v-if="flowStyles.length != index + 1" class="flow-arrow-div" >
+									<img src="img/flow-arrow.png">
+								</div>
+							</div>
+							<div class="sel-arrow-nav" >
+								<img src="img/nav-arrow.png" :class="flowStyle.navArrClass">
+							</div>
+						</div>
+
+						<!--<div class="flow-step-unit">
+							<div class="flow-step-btn-nav">
+								<div>
+									<button id="flow-btn-61" :class="flowClass">
+										预案匹配
+									</button>
+								</div>
+								<div class="flow-arrow-div">
+									<img src="img/flow-arrow.png">
+								</div>
+							</div>
+							<div class="sel-arrow-nav">
+								<img src="img/nav-arrow.png">
+							</div>
+						</div>
+						-->
+
+					</div>
+
+					<div class="flow-detail">
+
+						<!-- 消息生成详情页 -->
+						<div  id="flow-detail-31" class="flow-detail-content" >
+							<div   style="height: 100%;width: 100%">
+								<div class="newsTops-create-detail-top" style="font-size: 18px">
+										消息生成已完成！
+								</div >
+								<div class="newsTops-create-detail-bottom">
+									<div class="row">
+										<div class="col-md-10">
+											<div class="form-group">
+												<div class="layer-reso-bg" style="height: 300px;">
+													<table class="layer-reso-table" >
+														<thead>
+														<tr >
+															<th style="padding-left: 0px;text-align: center;">目标资源</th>
+															<th style="padding-left: 0px;text-align: center;">数据包大小</th>
+															<th style="padding-left: 0px;text-align: center;">数据包下载</th>
+														</tr>
+														</thead>
+														<tbody >
+														<tr class="layer-reso-name" v-for="dispatchFile in ebmDispatchFile"  >
+															<td style="padding-left: 0px;text-align: center;">{{dispatchFile.ebrName}}</td>
+															<td style="padding-left: 0px;text-align: center;">{{dispatchFile.fileSize | filterFileSize}}</td>
+															<td style="padding-left: 0px;text-align: center;">
+																<a   @click="downFile(dispatchFile.fileId)" style='text-decoration:underline;color: #00fbff;cursor: pointer;'>下载</a>
+															</td>
+														</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 消息审核详情页 -->
+						<div id="flow-detail-32" class="flow-detail-content" style="display: block;">
+
+							<!--有审核权限并且当前流程状态为未审核，否则选择审核信息-->
+							<div  v-if="permissions['sys:user:add']&&infoNoAudit" style="padding-top: 40px;">
+								<div class="row">
+									<div class="col-md-2">
+										<div class="form-group">
+											<label class="col-sm-12 control-label eb-layer-label-text" style="line-height: 16px;text-align: right">审核结果：</label>
+										</div>
+									</div>
+
+									<div class="col-md-9">
+										<div class="form-group">
+											<select  id="auditResult"  class="eb-select"  >
+												<div v-if="pageEnum != null">
+													<option v-for="p in pageEnum" v-if="p.dictGroupCode == 'AUDIT_STATUS_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+												</div>
+											</select>
+
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-2">
+										<div class="form-group">
+											<label class="col-sm-12 control-label eb-layer-label-text" style="line-height: 16px;text-align: right">审核意见：</label>
+										</div>
+									</div>
+
+									<div class="col-md-9">
+										<div class="form-group">
+											<textarea  class="audit-textarea" rows="8"  id="auditOpinion">
+											</textarea>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-11" style="text-align: center;margin-top: 30px;">
+										<button class="eb-btn-search" type="button" @click="reset()">
+											<i class="glyphicon glyphicon-repeat"></i> &nbsp; 重置
+										</button>
+
+										<button class="eb-btn-search" type="button" @click="doAudit()">
+											<i class="fa fa-check"></i> &nbsp; 确认
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div  v-else style="height: 100%;width: 100%">
+								<div class="newsTops-create-detail-top" >
+									消息审核详情：
+								</div >
+								<div class="newsTops-create-detail-bottom">
+									<div class="row">
+										<div class="col-md-10">
+											<div class="form-group">
+												<div class="layer-reso-bg" style="height: 300px;">
+													<table class="layer-reso-table" >
+														<thead>
+														<tr >
+															<th style="padding-left: 0px;text-align: center;">目标资源</th>
+															<th style="padding-left: 0px;text-align: center;">数据包大小</th>
+															<th style="padding-left: 0px;text-align: center;">审核状态</th>
+														</tr>
+														</thead>
+														<tbody >
+														<tr class="layer-reso-name" v-for="dispatchFile in ebmDispatchFile"  >
+															<td style="padding-left: 0px;text-align: center;">{{dispatchFile.ebrName}}</td>
+															<td style="padding-left: 0px;text-align: center;">{{dispatchFile.fileSize|filterFileSize}}</td>
+															<td style="padding-left: 0px;text-align: center;">
+																{{infoAuditState}}
+															</td>
+														</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+						<!-- 消息分发详情页 -->
+						<div  id="flow-detail-33" class="flow-detail-content" >
+							<div  style="height: 100%;width: 100%">
+								<div class="newsTops-create-detail-top" >
+									消息分发详情：
+								</div >
+								<div class="newsTops-create-detail-bottom">
+									<div class="row">
+										<div class="col-md-10">
+											<div class="form-group">
+												<div class="layer-reso-bg" style="height: 300px;">
+													<table class="layer-reso-table" >
+														<thead>
+														<tr >
+															<th style="padding-left: 0px;text-align: center;">目标资源</th>
+															<th style="padding-left: 0px;text-align: center;">数据包大小</th>
+															<th style="padding-left: 0px;text-align: center;">分发状态</th>
+														</tr>
+														</thead>
+														<tbody >
+														<tr class="layer-reso-name" v-for="dispatchFile in ebmDispatchFile"  >
+															<td style="padding-left: 0px;text-align: center;">{{dispatchFile.ebrName}}</td>
+															<td style="padding-left: 0px;text-align: center;">{{dispatchFile.fileSize|filterFileSize}}</td>
+															<td style="padding-left: 0px;text-align: center;">{{dispatchFile.stateName}}</td>
+														</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../js/common.js"></script>
+<script src="js/newsTopic.js"></script>
+<script type="text/javascript">
+    $(".detail-main").css({ height: $(this).height()-60});
+</script>
+
+</body>
+</html>

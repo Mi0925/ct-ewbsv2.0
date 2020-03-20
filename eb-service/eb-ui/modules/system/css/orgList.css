@@ -1,0 +1,19 @@
+.main-area {
+    overflow: auto;
+    position: absolute;
+    bottom: 55px;
+    top: 70px;
+    width: 100%;
+    padding: 10px;
+}
+.btns {
+    position: absolute;
+    bottom: 5px;
+    width: 100%;
+    text-align: center;
+}
+.main-area .jqGridPager{
+    position: relative;
+    width: 100%;
+    bottom: 0;
+}

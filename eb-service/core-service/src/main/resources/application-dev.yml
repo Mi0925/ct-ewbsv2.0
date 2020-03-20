@@ -1,0 +1,49 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    sky:
+      type: com.zaxxer.hikari.HikariDataSource
+      driver-class-name: com.mysql.jdbc.Driver
+      initialize: true
+      name: sky
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/cz_eb_dev?zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+      username: root
+      password: root
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    virtual-host: eb
+    username: comtom
+    password: comtom
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://admin:123456@127.0.0.1:9999/eureka/
+
+file:
+  ftp:
+      hostname: 127.0.0.1
+      port: 21
+      username: admin
+      password: admin
+fdfs:
+  connect-timeout: 1501  #连接超时时间
+  so-timeout: 601       #读取时间
+  thumb-image:         #生成缩略图参数
+    width: 150
+    height: 150
+  tracker-list: 192.168.7.200:22122
+  pool:
+    max-total: 1000
+    max-wait-millis: 10000
+    min-idle-per-key: 10
+    max-idle-per-key: 20
+    max-total-per-key: 50
+baidu:
+  tts:
+      appid: 15977493
+      apikey: QzfRhA7iCpGiqQVwluYOyjVX
+      secretkey: ziNPW5GtFUM1CaXGbUWEmImVwwYfhh4j
+svs:
+  service:
+    ebmNoticeUrl: http://127.0.0.1:8688/websocket/ebmNoticeSend

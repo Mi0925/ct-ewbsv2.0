@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.core.main.scheme.mapper.SchemeMapper">
+
+    <select id="getSchemePageInfo" resultType="cn.comtom.domain.core.scheme.info.SchemePageInfo"
+                                    parameterType="cn.comtom.domain.core.scheme.request.SchemeQueryRequest">
+        SELECT
+            S.*, E.MSGTITLE,
+            E.STARTTIME,
+            E.SEVERITY,
+            E.SENDNAME,
+            F.FLOWSTATE,
+            F.FLOWSTAGE
+        FROM
+            BC_SCHEME S
+        LEFT JOIN BC_EBM E ON E.EBMID = S.EBMID
+        LEFT JOIN BC_DISPATCH_FLOW F ON F.FLOWID = S.FLOWID
+        WHERE
+            1 = 1
+        <if test="schemeTitle != null and schemeTitle !=''">
+            and s.schemeTitle like CONCAT('%', #{schemeTitle}, '%')
+        </if>
+        <if test="bcType != null and bcType !='' and bcType == 9">
+            and E.SEVERITY = 9
+        </if>
+        <if test="bcType != null and bcType !='' and bcType != 9">
+            and E.SEVERITY &lt;&gt; 9
+        </if>
+        <if test="flowState != null and flowState !=''">
+            and F.FLOWSTATE =#{flowState}
+        </if>
+        <if test="flowStage != null and flowStage !=''">
+            and F.FLOWSTAGE =#{flowStage}
+        </if>
+        <if test="auditResult != null and auditResult !=''">
+            and S.AUDITRESULT =#{auditResult}
+        </if>
+        <if test="startTime != null and startTime !=''">
+            and E.STARTTIME &gt;#{startTime}
+        </if>
+        <if test="endTime != null and endTime !=''">
+            and E.STARTTIME &lt;#{endTime}
+        </if>
+    </select>
+
+</mapper>

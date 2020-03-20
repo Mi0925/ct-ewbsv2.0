@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+<title>应急广播平台-定时任务管理</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link href="../common/css/eb-common.css" rel="stylesheet">
+<link href="../common/css/eb-right-float.css" rel="stylesheet">
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" >
+	<div class="main-content" >
+		<div class="page-content"  >
+
+			<div class="pull-right" id="searchDiv">
+				<form id="form-search-curve" class="form-inline"  action="javascript:void(0);" >
+
+					<div class="form-group">
+						<button class="eb-btn-search" type="button" @click="reload">
+							<i class="fa fa-search"></i> &nbsp; 刷  新
+						</button>
+					</div>
+				</form>
+
+			</div>
+
+
+				<div class="jqGridDiv">
+					<div class="jqGridDiv2" >
+						<table id="jqGrid"></table>
+						<div id="jqGridPager" class="jqGridPager"></div>
+					</div>
+				</div>
+
+		</div>
+
+
+		<div  id="quartzLayer" style="display: none;" class="eb-layer" >
+			<div class="eb-layer-title">
+				修改任务
+			</div>
+			<form class="form-horizontal m-t" id="user_form" method="post" >
+				<div class="form-group mg-h-30">
+					<label class="col-sm-4 control-label eb-label-text"><span class="e-required"> *</span>corn表达式：</label>
+					<div class="col-sm-7">
+						<input  v-model="cron" class="form-control eb-input-text" type="text" value="" maxlength="200" >
+					</div>
+				</div>
+
+				<div class="form-group mg-h-30" style="text-align: center">
+					<button class="eb-btn-search" type="button" @click="closeLayer()">
+						<i class="fa fa-close"></i> &nbsp; 取消
+					</button>
+
+					<button class="eb-btn-search" type="button" onclick="updateJob()">
+						<i class="fa fa-check"></i> &nbsp; 确认
+					</button>
+				</div>
+			</form>
+
+		</div>
+
+	</div>
+
+</div>
+
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../js/common.js"></script>
+<script src="js/quartz.js"></script>
+</body>
+</html>

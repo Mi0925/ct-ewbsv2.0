@@ -1,0 +1,51 @@
+.file_Lib_Nav {
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    font-weight: bold;
+}
+.parent_lib_name{
+    cursor: pointer;
+    color: #00ffff;
+}
+.btn_group{
+        float: left;
+}
+.eb-btn-opt{
+    background-color: transparent;
+    background: url(../../common/img/search.png) no-repeat center ;
+    background-size: 100% 100%;
+    border: 0px;
+    width: 100px;
+    height: 35px;
+    color: #00ffff;
+    font-size: 16px;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+td .cbox:checked {
+    background: url(../../common/img/check.png);
+}
+th .cbox:checked {
+    background: url(../../common/img/check.png);
+}
+
+.file_upload_title h5{
+    line-height: 40px;
+    text-align: center;
+    color: #eeeeee;
+}
+
+.file_upload_title{
+    height: 40px;
+    background-color: #1b6d85;
+}
+
+.audit-textarea{
+    text-align: left;
+    background-color: rgba(1,48,77,1);
+    border: #0e9aef 1px solid;
+    color: #feffff;
+    width: 100%;
+}
+

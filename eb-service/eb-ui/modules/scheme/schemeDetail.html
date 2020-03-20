@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+<title>应急广播平台-方案中心</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link href="../common/css/eb-common.css" rel="stylesheet">
+<link href="../common/css/eb-right-float.css" rel="stylesheet">
+<link href="css/schemeDetail.css" rel="stylesheet">
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" v-cloak>
+	<div class="main-content" >
+		<div class="page-content"  >
+			<!-- 返回键导航栏 -->
+			<div class="nav-btn">
+				<button class="eb-btn-operation"  onclick="back()"  /><i class="fa fa-mail-reply"></i>&nbsp;返回</button>
+			</div>
+			<!-- 主体 -->
+			<div class="detail-main">
+				<!-- 左侧专题详情 -->
+				<div  class="detail-left right-float-div">
+					<div v-if="ebmInfo != null && ebmInfo.schemeInfoAll != null " class="detail-content" style="width: 99%">
+						<div class="detail-head">
+							<div class="detail-title">
+								<div class="title-span" >
+									<i class="glyphicon glyphicon-list"></i>
+									{{ebmInfo.schemeInfoAll.schemeTitle | filterFun}}
+								</div>
+							</div>
+						</div>
+						<div class="detail-body">
+							<table>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 编号</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											{{ebmInfo.ebmId}}
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 基本信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text">
+												<label class="detail-text-label">预警标题：</label>
+												<div class="detail-text-content" :title="ebmInfo.msgTitle">{{ebmInfo.msgTitle | filterFun}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">预警类型：</label>
+												<div class="detail-text-content">{{ebmInfo.msgType | getEnumName('MSG_TYPE_DICT')}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">发布机构：</div>
+												<div class="detail-text-content">{{ebmInfo.sendName}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">事件类型：</label>
+												<div class="detail-text-content">{{ebmInfo.eventType | getEnumName('EVENT_TYPE_DICT') }}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">事件级别：</label>
+												<div class="detail-text-content">{{ebmInfo.severity | getEnumName('SEVERITY_DICT')}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">发布时间：</label>
+												<div class="detail-text-content">{{ebmInfo.sendTime}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">开始时间：</label>
+												<div class="detail-text-content">{{ebmInfo.startTime}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">结束时间：</label>
+												<div class="detail-text-content">{{ebmInfo.endTime}}</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 覆盖区域</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text">
+												<div class="detail-text-content" :title="areaNames">
+													<span>{{areaNames | filterAreaNamesFun }}</span>
+													<a v-if="areaNamesBtnShow" id="areaNames-btn" class="expand-btn" onclick="areaNamesBtnClick(this)">展开全部</a>
+												</div>
+											</div>
+										</div>
+
+									</td>
+								</tr>
+
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 预警内容</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text">
+												<div class="detail-text-label">预警内容：</div>
+												<div class="detail-text-content">
+													<div class="detail-text-content" :title="ebmInfo.msgDesc">
+														<span>{{ebmInfo.msgDesc | filterMsgDescFun }}</span>
+														<a v-if="msgDescBtnShow" id="msgDesc-btn" class="expand-btn" onclick="msgDescBtnClick(this)">展开全部</a>
+													</div>
+												</div>
+											</div>
+										</div>
+
+									</td>
+								</tr>
+								<tr >
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 辅助数据</span>
+										</div>
+									</td>
+									<td>
+										<div v-for="(auxiliary,index) in ebmInfo.ebmAuxiliaryInfoList" class="detail-text div-hr" style="border: 0">
+											<div v-if="index < 6" class="sub-detail-text" >
+												<div class="detail-text-content">
+													<span>{{auxiliary.auxiliaryDesc}}</span>
+													<a v-if="index == 5" id="auxiliary-btn" class="expand-btn" onclick="">展开全部</a>
+												</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+
+
+							</table>
+
+						</div>
+					</div>
+				</div>
+				<!-- 右侧流程处理 -->
+				<div class="detail-right">
+					<!-- 流程导航 -->
+					<div v-if="flowStyles != null" class="flow-step-nav">
+							<div v-for="(flowStyle,index) in flowStyles" :style="'width:' + (flowStyles.length != (index + 1) ? percentThree:percentTwo) + '%'" class="flow-step-unit">
+								<div class="flow-step-btn-nav">
+									<div>
+										<span id="flow-btn-61" :flowState="flowStyle.flowState" :class="flowStyle.flowClass" class="flow-btn" @click="flowStepChange(flowStyle.flowState)" :style="'width:' + (flowStyles.length != (index + 1) ? '67':'100') + '%'">
+											{{flowStyle.flowStateName}}
+										</span>
+									</div>
+									<div v-if="flowStyles.length != index + 1" class="flow-arrow-div" >
+                                        <img src="img/flow-arrow.png">
+                                    </div>
+								</div>
+								<div class="sel-arrow-nav" >
+									<img src="img/nav-arrow.png" :class="flowStyle.navArrClass">
+								</div>
+							</div>
+
+						<!--<div class="flow-step-unit">
+							<div class="flow-step-btn-nav">
+								<div>
+									<button id="flow-btn-61" :class="flowClass">
+										预案匹配
+									</button>
+								</div>
+								<div class="flow-arrow-div">
+									<img src="img/flow-arrow.png">
+								</div>
+							</div>
+							<div class="sel-arrow-nav">
+								<img src="img/nav-arrow.png">
+							</div>
+						</div>
+						-->
+
+					</div>
+
+					<div class="flow-detail">
+
+						<!-- 预案匹配详情页 -->
+						<div  id="flow-detail-61" class="flow-detail-content" >
+							<div  v-if="planMatched" style="height: 100%;width: 100%">
+								<div class="plan-match-detail-top">
+									<div class="clear" >
+										<div class="detail-top-label">
+											<div class="">
+												<label class="col-sm-12 control-label eb-layer-label-text" style="font-size: 18px">预案匹配成功</label>
+											</div>
+										</div>
+									</div>
+									<div class="clear" >
+										<div class="detail-top-label">
+											<div class="">
+												<label class="col-sm-12 control-label eb-layer-label-text">预案名称：</label>
+											</div>
+										</div>
+
+										<div class="detail-top-label">
+											<div class="">
+												<span class="l-h-40"  >{{ebmInfo.schemeInfoAll.sysPlanMatchInfo.planName}}</span>
+											</div>
+										</div>
+									</div>
+									<div class="clear" >
+										<div class="detail-top-label">
+											<div class="">
+												<label class="col-sm-12 control-label eb-layer-label-text">流程类型：</label>
+											</div>
+										</div>
+
+										<div class="detail-top-label">
+											<div class="">
+												<span class="l-h-40"  >{{ebmInfo.schemeInfoAll.sysPlanMatchInfo.flowType | getEnumName('plan_math_flow')}}</span>
+											</div>
+										</div>
+									</div>
+
+								</div >
+								<div class="plan-match-detail-bottom">
+
+									<div class="clear" >
+										<div class="detail-top-label">
+											<div class="">
+												<label class="col-sm-12 control-label eb-layer-label-text">匹配资源：</label>
+											</div>
+										</div>
+
+										<div class="detail-top-label">
+												<div class="layer-reso-bg" >
+													<table class="layer-reso-table" id="choose-table" style="width: 350px;">
+														<thead>
+														<tr>
+															<th style="text-align: center;padding: 0" colspan="2">已匹配资源</th>
+														</tr>
+														</thead>
+														<tbody >
+														<tr class="layer-reso-name" v-for="reso in matchedResList"  >
+															<td style="padding-left: 24px;">{{reso.ebrName}}</td>
+														</tr>
+														</tbody>
+													</table>
+												</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+							<div  v-if="!planMatched" style="text-align: center;padding: 10%">
+								<div>
+									<div style="margin-bottom: 20px;">
+										<img src="img/failed-210.png">
+									</div>
+									<span style="font-size: 25px; color: #00ffff;">
+										未匹配到预案！
+								</span>
+								</div>
+
+							</div>
+						</div>
+						<!-- 方案生成详情页 -->
+						<div id="flow-detail-21" class="flow-detail-content">
+							<div  v-if="ebmInfo.schemeInfoAll != null" style="height: 100%;width: 100%">
+								<div class="plan-match-detail-top">
+									<div class="clear" >
+										<div class="detail-top-label">
+											<div class="">
+												<label class="col-sm-12 control-label eb-layer-label-text" style="font-size: 18px">方案生成成功</label>
+											</div>
+										</div>
+									</div>
+									<div class="clear">
+										<div class="detail-top-label">
+											<div class="">
+												<label class="col-sm-12 control-label eb-layer-label-text" >方案名称：</label>
+											</div>
+										</div>
+
+										<div class="detail-top-label">
+											<div class="">
+												<span class="l-h-40" >{{ebmInfo.schemeInfoAll.schemeTitle}}</span>
+											</div>
+										</div>
+									</div>
+
+									<div class="clear">
+										<div class="detail-top-label">
+											<div class="">
+												<label class="col-sm-12 control-label eb-layer-label-text">生成时间：</label>
+											</div>
+										</div>
+
+										<div class="detail-top-label">
+											<div class="form-group">
+												<span class="l-h-40" >{{ebmInfo.schemeInfoAll.createTime}}</span>
+											</div>
+										</div>
+									</div>
+
+
+
+
+									<!--<div class="row">-->
+										<!--<div class="col-md-2">-->
+											<!--<div class="form-group">-->
+												<!--<label class="col-sm-12 control-label eb-layer-label-text" style="line-height: 16px;text-align: right">匹配预案：</label>-->
+											<!--</div>-->
+										<!--</div>-->
+
+										<!--<div class="col-md-4">-->
+											<!--<div v-if="ebmInfo.schemeInfoAll.sysPlanMatchInfo != null" class="form-group">-->
+												<!--<span class="col-sm-12" >{{ebmInfo.schemeInfoAll.sysPlanMatchInfo.planName}}</span>-->
+											<!--</div>-->
+										<!--</div>-->
+									<!--</div>-->
+									<!--<div class="row">-->
+										<!--<div class="col-md-2">-->
+											<!--<div class="form-group">-->
+												<!--<label class="col-sm-12 control-label eb-layer-label-text" style="line-height: 16px;text-align: right">审核状态：</label>-->
+											<!--</div>-->
+										<!--</div>-->
+
+										<!--<div class="col-md-4">-->
+											<!--<div  class="form-group">-->
+												<!--<span class="col-sm-12" >{{ebmInfo.schemeInfoAll.auditResult | getEnumName('AUDIT_STATUS_DICT') }}</span>-->
+											<!--</div>-->
+										<!--</div>-->
+									<!--</div>-->
+
+								</div >
+								<div class="plan-match-detail-bottom">
+
+									<div class="clear">
+										<div class="detail-top-label">
+											<div class="">
+												<label class="col-sm-12 control-label eb-layer-label-text">使用资源：</label>
+											</div>
+										</div>
+
+										<div class="detail-top-label">
+												<div class="layer-reso-bg" >
+													<table class="layer-reso-table" id="choose-table1" style="width: 350px;">
+														<thead>
+														<tr>
+															<th style="text-align: center;padding: 0" colspan="2">已使用资源</th>
+														</tr>
+														</thead>
+														<tbody >
+														<tr class="layer-reso-name" v-for="reso in matchedResList">
+															<td style="padding-left: 24px;">{{reso.ebrName}}</td>
+														</tr>
+														</tbody>
+													</table>
+												</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- 方案优化详情页 -->
+						<div id="flow-detail-22" class="flow-detail-content"  style="padding-top:50px;">
+							  		<form class="form-horizontal planMathForm"  method="post" >
+				  
+				<div class="row" id="scheme_optima">
+					<div class="col-md-2">
+						<div class="form-group">
+							<label class="col-sm-12 control-label eb-layer-label-text">调整资源</label>
+						</div>
+					</div>
+					<div class="col-md-10">
+						<div class="col-md-5">
+							<div class="form-group" style="padding-right: 60px;">
+								<div class="layer-reso-bg" >
+									<table class="layer-reso-table select-table-ebrlist" id="select-table">
+										<thead>
+											<tr>
+												<th colspan="2">可选资源</th>
+											</tr>
+										</thead>
+										<tbody v-for="reso in resoList">
+											<tr class="layer-reso-type">
+												<td>{{reso.ebrTypeName}}</td><td width="20%"></td>
+											</tr>
+											<tr class="layer-reso-name" v-for="ebrInfo in reso.ebrInfoList" @click="changCheck1(['reso'+ebrInfo.ebrId])" v-bind:id="['reso'+ebrInfo.ebrId]">
+												<td>{{ebrInfo.ebrName}}</td><td width="25%"><img src="" v-bind:ebrType="reso.ebrType" v-bind:ebrId="ebrInfo.ebrId" v-bind:ebrName="ebrInfo.ebrName"/></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-md-2">
+							<div class="form-group" style="margin-top: 80px;margin-left: -25px;">
+								<ul style="list-style-type:none">
+									<li>
+										<button class="eb-layer-btn" type="button" @click="selectAll()">
+											选择全部&nbsp;
+											<i class="fa fa-angle-double-right"></i>
+										</button>
+									</li>
+									<li>
+										<button class="eb-layer-btn" type="button" @click="selectSome()">
+											选择&nbsp;
+											<i class="fa fa-angle-right"></i>
+										</button>
+									</li>
+									<li>
+										<button class="eb-layer-btn" type="button" @click="cancelSome()">
+											<i class="fa fa-angle-left"></i>&nbsp;取消
+										</button>
+									</li>
+									<li>
+										<button class="eb-layer-btn" type="button" @click="cancelAll()">
+											<i class="fa fa-angle-double-left"></i>&nbsp;取消全选
+										</button>
+									</li>
+								</ul>
+							</div>
+						</div>
+					    <div class="col-md-5">
+							<div class="form-group" style="padding-right: 60px;">
+								<div class="layer-reso-bg" >
+									<table class="layer-reso-table choose-table-ebrlist" id="choose-table-ebrlist">
+										<thead>
+										<tr>
+											<th colspan="2">已选资源</th>
+										</tr>
+										</thead>
+										<tbody >
+										<tr class="layer-reso-name" v-for="reso in refEbrList"   @click="changCheck1(['choose'+reso.ebrId])" v-bind:id="['choose'+reso.ebrId]">
+											<td style="padding-left: 24px;">{{reso.ebrName}}</td><td width="25%"><img src=""  v-bind:ebrType="reso.ebrType" v-bind:ebrId="reso.ebrId" v-bind:ebrName="reso.ebrName"/></td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="col-md-2">
+						<div class="form-group">
+							<label class="col-sm-12 control-label eb-layer-label-text"></label>
+						</div>
+					</div>
+					<div class="col-md-9" style="text-align: center;">
+						<button class="eb-btn-search" type="button" @click="saveOrUpdate()">
+							<i class="fa fa-check"></i> &nbsp; 确认
+						</button>
+					</div>
+				</div>
+		</form>
+							
+						</div>
+						<!-- 方案调整详情页 -->
+						<div id="flow-detail-23" class="flow-detail-content" style="padding-top:50px;">
+		  		<form class="form-horizontal planMathForm"  method="post" >
+				  
+				<div class="row"  id="scheme_tiaozheng">
+					<div class="col-md-2">
+						<div class="form-group">
+							<label class="col-sm-12 control-label eb-layer-label-text">调整资源</label>
+						</div>
+					</div>
+					<div class="col-md-10">
+						<div class="col-md-5">
+							<div class="form-group" style="padding-right: 60px;">
+								<div class="layer-reso-bg" >
+									<table class="layer-reso-table select-table-ebrlist" id="select-table">
+										<thead>
+											<tr>
+												<th colspan="2">可选资源</th>
+											</tr>
+										</thead>
+										<tbody v-for="reso in resoList">
+											<tr class="layer-reso-type">
+												<td>{{reso.ebrTypeName}}</td><td width="20%"></td>
+											</tr>
+											<tr class="layer-reso-name" v-for="ebrInfo in reso.ebrInfoList" @click="changCheck(['reso'+ebrInfo.ebrId])" v-bind:id="['reso'+ebrInfo.ebrId]">
+												<td>{{ebrInfo.ebrName}}</td><td width="25%"><img src="" v-bind:ebrType="reso.ebrType" v-bind:ebrId="ebrInfo.ebrId" v-bind:ebrName="ebrInfo.ebrName"/></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-md-2">
+							<div class="form-group" style="margin-top: 80px;margin-left: -25px;">
+								<ul style="list-style-type:none">
+									<li>
+										<button class="eb-layer-btn" type="button" @click="selectAll()">
+											选择全部&nbsp;
+											<i class="fa fa-angle-double-right"></i>
+										</button>
+									</li>
+									<li>
+										<button class="eb-layer-btn" type="button" @click="selectSome()">
+											选择&nbsp;
+											<i class="fa fa-angle-right"></i>
+										</button>
+									</li>
+									<li>
+										<button class="eb-layer-btn" type="button" @click="cancelSome()">
+											<i class="fa fa-angle-left"></i>&nbsp;取消
+										</button>
+									</li>
+									<li>
+										<button class="eb-layer-btn" type="button" @click="cancelAll()">
+											<i class="fa fa-angle-double-left"></i>&nbsp;取消全选
+										</button>
+									</li>
+								</ul>
+							</div>
+						</div>
+					    <div class="col-md-5">
+							<div class="form-group" style="padding-right: 60px;">
+								<div class="layer-reso-bg" >
+									<table class="layer-reso-table choose-table-ebrlist" id="choose-table-ebrlist">
+										<thead>
+										<tr>
+											<th colspan="2">已选资源</th>
+										</tr>
+										</thead>
+										<tbody >
+										<tr class="layer-reso-name" v-for="reso in refEbrList"   @click="changCheck(['choose'+reso.ebrId])" v-bind:id="['choose'+reso.ebrId]">
+											<td style="padding-left: 24px;">{{reso.ebrName}}</td><td width="25%"><img src=""  v-bind:ebrType="reso.ebrType" v-bind:ebrId="reso.ebrId" v-bind:ebrName="reso.ebrName"/></td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="col-md-2">
+						<div class="form-group">
+							<label class="col-sm-12 control-label eb-layer-label-text"></label>
+						</div>
+					</div>
+					<div class="col-md-9" style="text-align: center;">
+						<button class="eb-btn-search" type="button" @click="saveOrUpdate()">
+							<i class="fa fa-check"></i> &nbsp; 确认
+						</button>
+					</div>
+				</div>
+		</form>
+						</div>
+						<!-- 方案审核详情页 -->
+						<div id="flow-detail-24" class="flow-detail-content" style="display: block;padding: 40px 60px; width: 90%">
+							<div v-if="ebmInfo.schemeInfoAll != null">
+								<div class="clear" >
+									<div class="detail-top-label">
+										<div class="">
+											<label class="col-sm-12 control-label eb-layer-label-text" style="font-size: 18px">方案审核</label>
+										</div>
+									</div>
+								</div>
+								<div class="clear" style="height: 60px;">
+									<div class="detail-top-label">
+										<div class="">
+											<label class="col-sm-12 control-label eb-layer-label-text" >审核结果：</label>
+										</div>
+									</div>
+
+									<div class="detail-top-label">
+										<div class="">
+											<select v-if="ebmInfo.schemeInfoAll.auditResult != '1' && permissions['core:scheme:audit'] " id="auditResult"  class="eb-select"  :value="ebmInfo.schemeInfoAll.auditResult">
+												<div v-if="pageEnum != null">
+													<option v-for="p in pageEnum" v-if="p.dictGroupCode == 'AUDIT_STATUS_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+												</div>
+											</select>
+											<span v-if="ebmInfo.schemeInfoAll.auditResult == '1' || !permissions['core:scheme:audit']" style="color: #00ffff;" class="l-h-40">
+												{{ebmInfo.schemeInfoAll.auditResult | getEnumName('AUDIT_STATUS_DICT')}}
+											</span>
+										</div>
+									</div>
+								</div>
+								<div class="clear" style="width: 100%">
+									<div class="detail-top-label">
+										<div class="">
+											<label class="col-sm-12 control-label eb-layer-label-text" style="line-height: 16px;text-align: right">审核意见：</label>
+										</div>
+									</div>
+
+									<div class="detail-top-label" style="width: 70%">
+										<div class="">
+											<textarea  class="audit-textarea" rows="10" :value="ebmInfo.schemeInfoAll.auditOpinion" id="auditOpinion">
+											</textarea>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div v-if="permissions['core:scheme:audit'] && ebmInfo.schemeInfoAll.auditResult != '1' " class="col-md-11" style="text-align: center;margin-top: 30px;">
+										<button class="eb-btn-search" type="button" @click="reset()">
+											<i class="glyphicon glyphicon-repeat"></i> &nbsp; 重置
+										</button>
+
+										<button class="eb-btn-search" type="button" @click="doAudit()">
+											<i class="fa fa-check"></i> &nbsp; 确认
+										</button>
+									</div>
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+				</div>
+		</div>
+
+
+	</div>
+
+</div>
+
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../js/common.js"></script>
+<script src="js/schemeDetail.js"></script>
+<script type="text/javascript">
+    $(".detail-main").css({ height: $(this).height()-60});
+</script>
+
+
+</body>
+</html>

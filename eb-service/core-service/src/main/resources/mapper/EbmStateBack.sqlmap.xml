@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.core.main.ebm.mapper.EbmStateBackMapper">
+
+    <select id="queryList" resultType="cn.comtom.domain.core.ebm.info.EbmStateBackInfo">
+        SELECT
+        back.*,
+        dict.dict_value as backStatusName
+        FROM bc_ebm_state_back back
+        left join
+        sys_dict dict on back.backStatus=dict.dict_key and dict.dict_group_code=#{dictGroupCode}
+        <where>
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(ebmId)">
+              And back.ebmId=#{ebmId}
+            </if>
+            <if test="@cn.comtom.tools.utils.MapperUtils@isNotEmpty(brdItemId)">
+                And back.brdItemId=#{brdItemId}
+            </if>
+        </where>
+        order by back.backTime desc
+    </select>
+
+</mapper>

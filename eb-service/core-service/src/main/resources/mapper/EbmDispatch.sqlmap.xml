@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.core.main.ebm.mapper.EbmDispatchMapper">
+
+    <select id="queryList" resultType="cn.comtom.domain.core.ebm.info.EbmDispatchAndEbdFileInfo">
+
+        SELECT
+        dis.*
+        ,fi.url
+        ,fi.file_size as fileSize
+        ,ebr.ebrName
+        ,ebd.fileId
+        ,dict.dict_value as stateName
+        FROM
+        (
+        SELECT
+        c.*
+        FROM
+         (
+          SELECT psEbrId AS ebrId,matchEbdId as ebdId,ebmId,state FROM bc_ebm_dispatch
+         UNION ALL
+         SELECT bsEbrId AS ebrId,matchEbdId as ebdId,ebmId ,state FROM bc_ebm_dispatch
+         UNION ALL  SELECT asEbrId AS ebrId,matchEbdId as ebdId,ebmId ,state FROM bc_ebm_dispatch
+         UNION ALL  SELECT stEbrId AS ebrId,matchEbdId as ebdId,ebmId ,state FROM bc_ebm_dispatch
+         ) c
+         WHERE c.ebrId IS NOT NULL AND c.ebmId=#{ebmId}
+        ) dis
+        LEFT JOIN bc_ebd ebd ON dis.ebdId=ebd.ebdId
+        LEFT JOIN bc_origin_file_info fi ON ebd.fileId=fi.file_id
+        LEFT JOIN v_bc_ebr_info ebr ON dis.ebrId=ebr.ebrId
+        LEFT JOIN sys_dict dict ON dis.state=dict.dict_key and dict.dict_group_code=#{DISPATCH_STATUS_CODE}
+    </select>
+
+</mapper>

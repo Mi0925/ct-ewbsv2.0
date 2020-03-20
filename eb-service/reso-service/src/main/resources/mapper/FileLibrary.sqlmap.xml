@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.reso.main.file.mapper.FileLibraryMapper">
+
+
+
+    <select id="getListWithXml"  resultType="cn.comtom.domain.reso.file.info.FileLibraryInfo" parameterType="cn.comtom.domain.reso.file.request.FileLibraryPageRequest">
+      select * from bc_file_library l
+      where 1=1
+        <if test="libName != null and libName != ''">
+            and l.libName like CONCAT('%',#{libName}, '%')
+        </if>
+
+        <if test="parentLibId != null and parentLibId != ''">
+            and l.parentLibId =#{parentLibId}
+        </if>
+
+    </select>
+
+    <select id="callProcedureDeleteFileAll" statementType="CALLABLE" >
+{
+    call p_del_lib_all(
+        #{libId,mode=IN},
+        #{cnt,mode=OUT,jdbcType=INTEGER}
+    )
+}
+</select>
+
+</mapper>

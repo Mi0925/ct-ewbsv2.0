@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.reso.main.file.mapper.VFileLibMapper">
+
+
+
+    <select id="getListFromXml"  resultType="cn.comtom.domain.reso.file.info.VFileLibInfo" parameterType="cn.comtom.domain.reso.file.request.VFileLibPageRequest">
+        select * from v_file_lib f
+        where 1=1
+        <if test="libName != null and libName != ''">
+            and f.libName like CONCAT('%',#{libName}, '%')
+        </if>
+
+        <if test="parentLibName != null and parentLibName != ''">
+            and f.parentLibName like CONCAT('%',#{parentLibName}, '%')
+        </if>
+
+        <if test="parentLibId != null and parentLibId != ''">
+            and f.parentLibId =#{parentLibId}
+        </if>
+        <if test="auditState != null and auditState != ''">
+            and f.auditState =#{auditState}
+        </if>
+        <if test="type != null and type != ''">
+            and f.type =#{type}
+        </if>
+
+
+    </select>
+
+</mapper>

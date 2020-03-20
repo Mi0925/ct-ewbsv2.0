@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+	<title>应急广播平台-节目制作</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+	<link href="../common/css/eb-common.css" rel="stylesheet">
+	<link href="../common/css/eb-right-float.css" rel="stylesheet">
+	<link href="../../modules/scheme/css/schemeDetail.css" rel="stylesheet">
+	<link href="../../plugins/dropzone/dropzone.css" rel="stylesheet">
+	<link href="../../plugins/dropzone/basic.css" rel="stylesheet">
+	<link href="../../plugins/ztree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+	<link href="../resource/css/fileLib.css" rel="stylesheet">
+	<link href="css/programDetail.css" rel="stylesheet">
+
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" v-cloak>
+	<div id="dropzoneTpl">
+		<div class="dz-preview dz-file-preview">
+			<div class="dz-details">
+				<div class="dz-filename"><span data-dz-name></span></div>
+				<div class="dz-size" data-dz-size></div>
+				<img data-dz-thumbnail/>
+			</div>
+			<div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+			<div class="dz-error-message"><span data-dz-errormessage></span></div>
+		</div>
+	</div>
+	<div class="main-content" >
+		<div class="page-content"  >
+			<!-- 主体 -->
+			<div class="detail-main">
+				<!-- 左侧专题详情 -->
+				<div  class="detail-left right-float-div">
+					<div v-if="programInfo != null " class="detail-content" style="width: 99%">
+						<div class="detail-head">
+							<div class="detail-title">
+								<div class="title-span" :title="programInfo.programName" style="width: 300px;">
+									<i class="glyphicon glyphicon-list"></i>
+									{{programInfo.programName | filterFun(15)}}
+								</div>
+							</div>
+						</div>
+						<div class="detail-body">
+							<table>
+								<tr v-if="programInfo.programId != null">
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 节目编号</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											{{programInfo.programId}}
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 基本信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text">
+												<label class="detail-text-label">语种：</label>
+												<div class="detail-text-content" >{{programInfo.languageCode | getEnumName('MSG_LANG_DICT')}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">节目状态：</label>
+												<div class="detail-text-content">{{programInfo.state | getEnumName('PROGRAM_STATE_DICT')}}</div>
+											</div>
+
+											<div class="sub-detail-text">
+												<label class="detail-text-label">内容类型：</label>
+												<div class="detail-text-content">{{programInfo.contentType | getEnumName('PROGRAM_CONTENT_TYPE')}}</div>
+											</div>
+											<!--<div class="sub-detail-text">-->
+												<!--<label class="detail-text-label">事件分类：</label>-->
+												<!--<div class="detail-text-content">{{programInfo.ebmEventType | getEventName }}</div>-->
+											<!--</div>-->
+											<!--<div class="sub-detail-text">-->
+												<!--<div class="detail-text-label">事件描述：</div>-->
+												<!--<div class="detail-text-content">-->
+													<!--<span class="closeDesc">{{programInfo.ebmEventDesc | filterDescFun(40)}}</span>-->
+													<!--<span class="openDesc" style="display: none;">{{programInfo.ebmEventDesc}}</span>-->
+													<!--<a v-if="eventDescBtnShow" class="msgDesc-btn" onclick="eventDescBtnClick(this)">展开全部</a>-->
+												<!--</div>-->
+											<!--</div>-->
+										</div>
+									</td>
+								</tr>
+
+								<tr v-if="areaNames != null && areaNames!='' ">
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 区域信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text" >
+												<label class="detail-text-label">覆盖区域：</label>
+												<div class="detail-text-content">{{areaNames}}</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr v-if="programInfo.filesList != null && programInfo.filesList != '' ">
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 文件信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div v-for="(file,index) in programInfo.filesList" class="sub-detail-text" >
+												<div class="detail-text-content">{{file.fileName}}</div>
+												<div class="detail-text-content" style="display: none;">{{file.fileId}}</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr v-if="programInfo.programContent != null &&  programInfo.programContent.content != null &&  programInfo.programContent.content != ''">
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 节目内容</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text" >
+												<span class="closeDesc">{{programInfo.programContent.content | filterDescFun(100)}}</span>
+												<span class="openDesc" style="display: none;">{{programInfo.programContent.content}}</span>
+												<a v-if="eventDescBtnShow" class="msgDesc-btn" onclick="eventDescBtnClick(this)">展开全部</a>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr v-if="programInfo.programStrategy != null ">
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 节目策略</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text" >
+												<label class="detail-text-label">策略类型：</label>
+												<div class="detail-text-content">{{programInfo.programStrategy.strategyType | getEnumName('PROGRAM_STRATEGY_TYPE')}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="programInfo.programStrategy.strategyType == 1 ">
+												<label class="detail-text-label">播放日期：</label>
+												<div class="detail-text-content">{{programInfo.programStrategy.playTime}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="programInfo.programStrategy.strategyType == 2 || programInfo.programStrategy.strategyType == 3">
+												<label class="detail-text-label">开始日期：</label>
+												<div class="detail-text-content">{{programInfo.programStrategy.startTime}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="programInfo.programStrategy.strategyType == 2 || programInfo.programStrategy.strategyType == 3">
+												<label class="detail-text-label">结束日期：</label>
+												<div class="detail-text-content">{{programInfo.programStrategy.overTime}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="programInfo.programStrategy.strategyType == 3">
+												<label class="detail-text-label">每周：</label>
+												<div class="detail-text-content" v-if="weeks != null && weeks.length > 0 ">
+													<span v-for="(week,index) in weeks" style="margin: 0 5px;">{{week}}</span>
+												</div>
+											</div>
+
+											<div class="sub-detail-text" v-if="programInfo.programStrategy.timeList != null">
+												<label class="detail-text-label">时间段：</label>
+												<div class="detail-text-content" v-for="(time,index) in programInfo.programStrategy.timeList">
+													<span v-if="time.durationTime == null || time.durationTime == '' ">
+														{{time.startTime}} &nbsp; - &nbsp; {{time.overTime}}
+													</span>
+													<span v-if="time.durationTime != null && time.durationTime != '' ">
+														{{time.startTime}} 开始，循环 {{time.durationTime}} 次
+													</span>
+												</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+
+
+							</table>
+
+						</div>
+					</div>
+				</div>
+				<!-- 右侧流程处理 -->
+				<div class="detail-right">
+					<!-- 流程导航 -->
+					<div v-if="flowStyles != null" class="flow-step-nav">
+							<div v-for="(flowStyle,index) in flowStyles" :style="'width:' + (flowStyles.length != (index + 1) ? percentThree:percentTwo) + '%'" class="flow-step-unit">
+								<div class="flow-step-btn-nav">
+									<div>
+										<span id="flow-btn-61" :flowState="flowStyle.flowState" :class="flowStyle.flowClass" class="flow-btn"  :style="'width:' + (flowStyles.length != (index + 1) ? '67':'100') + '%'">
+											{{flowStyle.flowStateName}}
+										</span>
+									</div>
+									<div v-if="flowStyles.length != index + 1" class="flow-arrow-div" >
+                                        <img src="../../modules/scheme/img/flow-arrow.png">
+                                    </div>
+								</div>
+								<div class="sel-arrow-nav" >
+									<img src="../../modules/scheme/img/nav-arrow.png" :class="flowStyle.navArrClass">
+								</div>
+							</div>
+
+					</div>
+
+					<div class="flow-detail">
+						<!-- 基本信息 -->
+						<div  id="flow-detail-1" class="flow-detail-content" style="display: block;">
+
+							<div class="form-horizontal m-t program-detail-editor" id="base_info"  >
+
+								<div class="form-group ">
+									<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>节目名称：</label>
+									<div class="col-sm-4">
+										<input id="programName" v-model="programInfo.programName" maxlength="80"  class="form-control eb-input-text" type="text" value="">
+									</div>
+
+								</div>
+								<div class="form-group ">
+									<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>节目语种：</label>
+									<div class="col-sm-4">
+										<select  class="eb-select" v-model="programInfo.languageCode">
+											<option value="" > 请选择</option>
+											<div v-if="pageEnum != null">
+												<option v-for="p in pageEnum" v-if="p.dictGroupCode == 'MSG_LANG_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+											</div>
+										</select>
+									</div>
+								</div>
+								<!--<div class="form-group " >-->
+									<!--<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>事件分类：</label>-->
+									<!--<div class="col-sm-4">-->
+										<!--<select  class="eb-select" v-model="programInfo.ebmEventType">-->
+											<!--<option value="00000" > 所有事件</option>-->
+											<!--<div v-if="eventTypes != null">-->
+												<!--<option v-for="p in eventTypes"  v-bind:value="p.eventCode">{{p.eventDesc}}</option>-->
+											<!--</div>-->
+										<!--</select>-->
+									<!--</div>-->
+								<!--</div>-->
+								<!--<div class="form-group ">-->
+									<!--<label class="col-sm-2 control-label eb-label-text">事件描述：</label>-->
+									<!--<div class="col-sm-4">-->
+										<!--<textarea  class="audit-textarea" rows="5" :value="programInfo.ebmEventDesc" id="ebmEventDesc" v-model="programInfo.ebmEventDesc">-->
+
+										<!--</textarea>-->
+									<!--</div>-->
+								<!--</div>-->
+							</div>
+							<div class="form-group mg-h-30" style="text-align: center">
+-->
+								<button class="eb-btn-search" type="button" onclick="next(2)">
+									<i class="glyphicon glyphicon-arrow-right"></i> &nbsp; 下一步
+								</button>
+							</div>
+
+
+						</div>
+
+						<!-- 覆盖区域 -->
+						<div  id="flow-detail-2" class="flow-detail-content" >
+							<div class="form-horizontal m-t program-detail-editor" id="area_info"  >
+								<div class="form-group ">
+									<div style="width: 50%;float: left">
+										<div class="form-group ">
+											<label class="col-sm-3 control-label eb-label-text">待选区域</label>
+										</div>
+										<div class="form-group ">
+											<div class="col-sm-8">
+												<div class="area-div">
+													<div class="area-iframe ztree" id="areaTree"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div style="width: 50%;float: left">
+										<div class="form-group ">
+											<label class="col-sm-3 control-label eb-label-text">已选区域</label>
+										</div>
+										<div class="form-group ">
+											<div class="col-sm-8">
+												<div class="layer-reso-bg" >
+													<table class="layer-reso-table" id="program-area-table">
+														<tbody >
+														<tr v-if="programInfo.areaList != null " v-bind:areaCode="area.areaCode" class="layer-reso-name" v-for="area in programInfo.areaList"   >
+															<td >{{area.areaCode}}</td>
+															<td >{{area.areaName}}</td>
+														</tr>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+							<div class="form-group mg-h-30" style="text-align: center">
+								<button class="eb-btn-search" type="button" onclick="next(1)">
+									<i class="glyphicon glyphicon-arrow-left"></i> &nbsp; 上一步
+								</button>
+								<button class="eb-btn-search" type="button" onclick="next(3)">
+									<i class="glyphicon glyphicon-arrow-right"></i> &nbsp; 下一步
+								</button>
+							</div>
+						</div>
+
+						<!-- 节目内容 -->
+						<div  id="flow-detail-3" class="flow-detail-content" >
+							<div class="form-horizontal m-t program-detail-editor" id="content_info"  >
+								<div class="form-group ">
+									<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>节目类型：</label>
+									<div class="col-sm-4">
+										<select  class="eb-select" v-model="programInfo.contentType" onchange="contentTypeChange(this)">
+											<option value="">请选择</option>
+											<div v-if="pageEnum != null">
+												<option v-for="p in pageEnum"  v-if="p.dictGroupCode == 'PROGRAM_CONTENT_TYPE'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+											</div>
+										</select>
+									</div>
+								</div>
+
+								<div  id="program-content-1" class="program-content" >
+									<div class="form-group ">
+										<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>文本内容：</label>
+										<div class="col-sm-6">
+										<textarea  class="audit-textarea" rows="10" maxlength="2000" :value="programInfo.programContent.content" id="text-content" v-model="programInfo.programContent.content">
+
+										</textarea>
+										</div>
+									</div>
+								</div>
+
+								<div  id="program-content-2" class="program-content" style="display: none">
+									<div class="form-group ">
+										<label class="col-sm-2 control-label eb-label-text"></label>
+										<div class="col-sm-2">
+											<button class="program-file-upload-btn" type="button" @click="uploadFiles" >
+												点击上传文件
+											</button>
+										</div>
+									</div>
+
+									<div class="form-group ">
+										<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>文件列表:</label>
+										<div class="col-sm-6">
+											<div class="layer-reso-bg" >
+												<table class="layer-reso-table" id="program-file-table">
+													<tbody >
+														<tr v-if="programInfo.filesList != null "
+															v-bind:fileId="file.fileId"
+															v-bind:fileName="file.fileName"
+															class="layer-reso-name" v-for="(file,index) in programInfo.filesList">
+															<td>{{index + 1}}</td>
+															<td>{{file.fileName}}</td>
+															<td style="color: red;cursor: pointer;" onclick="removeFiles(this)">
+																<span class="glyphicon glyphicon-remove"   aria-hidden="true"></span>
+																移除
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div  id="program-content-3" class="program-content" style="display: none">
+									<div class="form-group ">
+										<label class="col-sm-2 control-label eb-label-text"></label>
+										<div class="col-sm-2">
+											<button class="program-file-upload-btn" type="button" @click="choseFiles" >
+												点击选择曲目
+											</button>
+										</div>
+									</div>
+
+									<div class="form-group ">
+										<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>已选曲目:</label>
+										<div class="col-sm-6">
+											<div class="layer-reso-bg" >
+												<table class="layer-reso-table" id="program-file-tb">
+													<tbody >
+													<tr v-if="programInfo.filesList != null "
+														v-bind:fileId="file.fileId"
+														v-bind:fileName="file.fileName"
+														v-bind:secondLength="file.secondLength"
+														class="layer-reso-name" v-for="(file,index) in programInfo.filesList">
+														<td>{{file.fileName}}</td>
+														<td style="color: red;cursor: pointer;" onclick="removeFiles(this)">
+															<span class="glyphicon glyphicon-remove"   aria-hidden="true"></span>
+															移除
+														</td>
+													</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+
+							<div class="form-group mg-h-30" style="text-align: center">
+								<button class="eb-btn-search" type="button" onclick="next(2)">
+									<i class="glyphicon glyphicon-arrow-left"></i> &nbsp; 上一步
+								</button>
+								<button class="eb-btn-search" type="button" onclick="next(4)">
+									<i class="glyphicon glyphicon-arrow-right"></i> &nbsp; 下一步
+								</button>
+							</div>
+
+
+						</div>
+
+						<!-- 节目策略 -->
+						<div  id="flow-detail-4" class="flow-detail-content" >
+
+							<div class="form-horizontal m-t program-detail-editor" id="strategy_info"  v-if="programInfo.programStrategy != null">
+								<div class="form-group ">
+									<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>播放策略：</label>
+									<div class="col-sm-4">
+										<span v-for="type in pageEnum" v-if="type.dictGroupCode == 'PROGRAM_STRATEGY_TYPE' " class="eb-radio-span l-h-40">
+											<input  type="radio"  name="strategyType" onclick="programStrategyTypeChose(this)"  v-bind:value="type.dictKey" v-model="programInfo.programStrategy.strategyType"/>
+											<span >{{type.dictValue}}</span>
+										</span>
+									</div>
+								</div>
+								<div class="form-group programStrategy"  id="programStrategy-1" style="display: none;">
+									<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>播放日期：</label>
+									<div class="col-sm-4">
+										<input id="playTime" v-model="programInfo.programStrategy.playTime" readonly class="form-control eb-input-text" type="text" value="">
+									</div>
+
+								</div>
+								<div class="form-group programStrategy"  id="programStrategy-2" style="display: none;">
+									<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>有效日期：</label>
+									<div class="col-sm-2">
+										<input id="vStartTime"  placeholder="有效开始日期" readonly  class="form-control eb-input-text" v-model="programInfo.programStrategy.startTime">
+									</div>
+									<div class="col-sm-2">
+										<input id="vOverTime"  placeholder="有效结束日期" readonly class="form-control eb-input-text" v-model="programInfo.programStrategy.overTime" >
+									</div>
+
+								</div>
+
+								<div class="form-group programStrategy"  id="programStrategy-3" style="display: none;">
+									<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>每周：</label>
+									<div class="col-sm-8">
+										<span v-for="type in pageEnum" v-if="type.dictGroupCode == 'WEEK_MASK_DICT' " class="eb-radio-span l-h-40">
+											<input  type="checkbox"  v-bind:value="type.dictKey" :checked="weekChecked(type.dictKey)"  v-bind:weekName="type.dictValue" class="week-checkbox" onclick="weekCheckBoxClicked(this)"/>
+											<span >{{type.dictValue}}</span>
+										</span>
+									</div>
+								</div>
+
+								<div class="form-group ">
+									<label class="col-sm-2 control-label eb-label-text"><span class="e-required"> *</span>时间区间：</label>
+									<div class="col-sm-2">
+										<input id="startTime"  placeholder="开始时间" readonly  class="form-control eb-input-text" >
+									</div>
+									<div class="col-sm-2">
+										<select  class="eb-select" id="durationTime_aaa"   v-model="timeStyle" style="font-size: 14px;">
+											<option value="1" > 结束时间</option>
+											<option value="2" > 播放次数</option>
+										</select>
+									</div>
+									<!--  <div class="col-sm-2" v-if="timeStyle == 1">
+										<input id="overTime"  readonly placeholder="结束时间"  class="form-control eb-input-text" >
+									</div>
+									<div class="col-sm-2" v-if="timeStyle == 2">
+										<input id="durationTime" onfocus="durationTimeBlur()"  placeholder="播放次数"  class="form-control eb-input-text" >
+									</div>
+									-->
+									<div class="col-sm-2" id="durationTime_sss">
+										<input id="overTime"  readonly placeholder="结束时间"  class="form-control eb-input-text" >
+									</div>
+									<div class="col-sm-2" >
+										<button class="program-time-add-btn" id="program-time-add-btn" type="button" onclick="addProgramTime(this)" >
+											 添加
+										</button>
+									</div>
+
+
+								</div>
+								<div class="form-group ">
+									<label class="col-sm-2 control-label eb-label-text"></label>
+									<div class="col-sm-6">
+										<div class="layer-reso-bg" style="height: 190px;">
+											<table class="layer-reso-table" id="program-time-table">
+												<tbody >
+												<tr v-if="programInfo.programStrategy.timeList != null "
+													v-bind:timeId = "time.timeId"
+													class="layer-reso-name" v-for="time in programInfo.programStrategy.timeList"   >
+													<td >{{time.startTime}}</td>
+													<td width="10%" v-if="time.overTime != null && time.overTime != '' ">至</td>
+													<td width="10%" v-if="time.durationTime != null && time.durationTime != '' ">循环</td>
+													<td v-if="time.overTime != null && time.overTime != ''">{{time.overTime}}</td>
+													<td v-if="time.durationTime != null && time.durationTime != '' ">{{time.durationTime}} &nbsp;次</td>
+													<td style="color: red;cursor: pointer;" onclick="removeTime(this)">
+														<span class="glyphicon glyphicon-remove"   aria-hidden="true"></span>
+														移除
+													</td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+							<div class="form-group mg-h-30" style="text-align: center">
+								<button class="eb-btn-search" type="button" onclick="next(3)">
+									<i class="glyphicon glyphicon-arrow-left"></i> &nbsp; 上一步
+								</button>
+								<button class="eb-btn-search" :class="saveBtnEnable ? '' : 'btn_disabled'" type="button" @click="saveOrUpdate(2)">
+									<i class="fa fa-save"></i> &nbsp; 保存
+								</button>
+								<button class="eb-btn-search " :class="commitBtnEnable ? '' : 'btn_disabled'"  type="button" @click="saveAndCommit(2)">
+									<i class="fa fa-check"></i> &nbsp; 提交
+								</button>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="ibox-content" id="uploadFileDiv" style="display: none">
+						<div class="wrapper wrapper-content animated fadeIn">
+							<div class="">
+								<div class="col-sm-12">
+									<div class="ibox float-e-margins ">
+										<div class="ibox-title file_upload_title">
+											<h5>拖动文件到这里或者点击选择文件上传</h5>
+										</div>
+										<div class="ibox-content" style="width: auto;height: 245px;overflow: hidden">
+											<form id="my-awesome-dropzone" class="dropzone">
+												<input type="hidden" name="libId" v-model="uploadFileLibId"/>
+												<input type="hidden" name="auditState" v-model="uploadFileStatus"/>
+												<div class="dz-default dz-message"></div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+
+					<div  id="fileChoseLayer" style="display: none;" class="eb-layer" >
+						<div class="file-chose-main">
+							<div class="eb-layer-title" style="margin: 0">
+								选择曲目
+							</div>
+							<div class="file_Lib_Nav" style="padding-left: 30px;">
+								<span class="parent_lib_name" onclick="parentLibNavClick('0',this)"> <i class="fa fa-home"></i>&nbsp;文件管理</span>
+							</div>
+							<div class="file-chose-div">
+								<div class="jqGridDiv2" style="width: 1100px;padding: 0">
+									<table id="jqGrid"></table>
+									<div id="jqGridPager" class="jqGridPager"></div>
+								</div>
+							</div>
+
+							<div class="form-group mg-h-30" style="text-align: center">
+								<button class="eb-btn-search" type="button" onclick="saveChoseFiles()">
+									保存
+								</button>
+								<button class="eb-btn-search" type="button" @click="closeLayer()">
+									取消
+								</button>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+
+
+
+				</div>
+		</div>
+
+
+	</div>
+
+</div>
+
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../plugins/dropzone/dropzone.js"></script>
+<script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+<script src="../../js/common.js"></script>
+<!--<script src="../../modules/common/js/eb-ztree.js"></script>-->
+<script src="js/programNormal.js"></script>
+<script type="text/javascript">
+    $(".detail-main").css({ height: $(this).height()-20});
+    
+    $(document).ready(function(){
+        $("#durationTime_aaa").change(function(){
+        	var thisCTime = new Date().Format("yyyy-MM-dd hh:mm:ss").split(" ")[1];
+            var st = $("#durationTime_aaa").val();
+            if(st=="1"){
+            	$("#durationTime_sss").empty();
+                $("#durationTime_sss").append('<input id="overTime"  readonly placeholder="结束时间"  class="form-control eb-input-text" >');
+                laydate.render({
+                    elem: '#overTime',
+                    type: 'time',
+                    theme: 'molv',
+                    min:thisCTime
+                  });
+            }else{
+            	var contentHtml = '<input id="durationTime" maxlength="2"';
+            		contentHtml += 'onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'\')}else{this.value=this.value.replace(/\D/g,\'\')}" ';
+            		contentHtml += 'onpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,\'0\')}else{this.value=this.value.replace(/\D/g,\'\')}" ';
+            		contentHtml += 'type="number" min="1" max="99" placeholder="播放次数"  class="form-control eb-input-text" >';
+                $("#durationTime_sss").empty();
+                $("#durationTime_sss").append(contentHtml);
+            }
+        })
+        vm.programInfo.programType = 2;
+    })
+</script>
+
+
+</body>
+</html>

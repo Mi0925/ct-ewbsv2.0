@@ -1,0 +1,10 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://admin:123456@127.0.0.1:9999/eureka
+
+      
+cert:
+  apply:
+    url: http://124.127.49.183:809/MAV/zcqq
+    cert: '000011010001'

@@ -1,0 +1,66 @@
+server:
+  port: 9000
+
+#注册到Eureka中的实例名
+spring:
+  application:
+    name: eb-gataway
+  cloud:
+    gateway:
+      discovery: # 此处配置表示开启自动映射Eureka下发的路由
+        locator: 
+          enabled: true
+          lowerCaseServiceId: true
+      routes:
+      - id: signature-service #路由 ID
+        uri: lb://signature-service #目标服务地址,lb代表从注册中心获取服务
+        predicates: #路由条件
+        - Path=/signature/**
+        filters:  #请求过滤filter，为一个数组，每个filter都会顺序执行
+        - StripPrefix=1 #StripPrefix截取请求url 必须加上StripPrefix=1，否则访问服务时会带上signature
+        #- JwtCheck=true #自定义gateway filter
+        - name: Retry  #Retry重试
+          args:
+                retries: 3 #重试次数，默认3，不包含本次
+                status: 404 #重试response code，默认没有
+                statusSeries: 500 #重试response code的系列，100（info），200（success），300（redirect），400（client error），500（server error），默认500
+                method: GET #重试的request请求，默认GET
+        - name: Hystrix  #Hystrix断路由
+          args:
+            name: authHystrixCommand
+            fallbackUri: forward:/hystrixTimeout
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 1
+    jedis:
+      pool:
+        max-active: 200
+        max-idle: 10
+        max-wait: 10
+        min-idle: 5
+    password: 123456        
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://admin:123456@127.0.0.1:9999/eureka/
+
+service:  
+  ignored-token: 
+    paths: 
+      - /front-service/**
+      - /**/doc.html
+      - /**/swagger-resources
+      - /**/webjars/**
+      - /**/v2/api-docs
+      - /system-service/system/users/authorize
+      - /system-service/system/userToken/**
+
+#ribbon:
+  #eureka:
+    #enabled: false
+#core-service:
+  #ribbon:
+    #listOfServers: http://127.0.0.1:9003/core/
+

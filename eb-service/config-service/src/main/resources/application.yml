@@ -1,0 +1,50 @@
+server:
+  port: 9008
+eureka:
+  instance:
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 10
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+  client:
+    serviceUrl:
+      defaultZone: http://admin:123456@127.0.0.1:9999/eureka/
+ribbon:
+  ReadTimeout: 130000
+  #请求连接的超时时间
+  ConnectTimeout: 10000
+spring:
+  application:
+    name: config-service
+  output:
+    ansi:
+      enabled: always
+#  profiles:
+#    active: #{spring.profiles.active}
+  cloud:
+    config:
+      server:
+        git:
+          uri: http://git.comtom.cn:18000/wangbingyan/eb-config.git
+          username: wangbingyan@comtom.cn
+          password: ailimin13+
+          search-paths: '{application}'  #配置仓库路径
+          force-pull: true
+          clone-on-start: true
+          default-label: master
+          #basedir: E:\Java_IDEA\config\basedir  # 可以使用这个配置项来指定本地git仓库的路径
+  rabbitmq:  #configserver承担配置刷新
+    host: 127.0.0.1
+    port: 5672
+    username: comtom
+    password: comtom
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh  
+        
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss

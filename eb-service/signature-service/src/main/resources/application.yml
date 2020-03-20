@@ -1,0 +1,38 @@
+server:
+  port: 9007
+  tomcat:
+    basedir: /data
+eureka:
+  instance:
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 10
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+spring:
+  application:
+    name: signature-service
+  output:
+    ansi:
+      enabled: always
+  profiles:
+    active: #{spring.profiles.active}
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  servlet:
+    multipart:
+      enabled: false
+      max-file-size: 30MB
+      location: /data
+yingjgb:
+  Signature:
+    deviceType: 0
+    dataType: 1
+logging:
+  config: classpath:logback-spring.xml
+
+    
+    
+  
+    
+    

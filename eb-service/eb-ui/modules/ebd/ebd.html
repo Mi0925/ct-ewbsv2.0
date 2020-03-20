@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>应急广播平台</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link href="../common/css/eb-common.css" rel="stylesheet">
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp">
+	<div class="main-content">
+		<div class="page-content" >
+
+			<div class="pull-right">
+				<form id="form-search-curve" class="form-inline" action="javascript:void(0);" >
+
+
+					<div class="form-group">
+						<div class="input-group input-group-sm">
+							<label class="control-label eb-label-text">数据包编号</label>
+							<input  class="input-date eb-input"  v-model="req.ebdId"/>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="input-group input-group-sm styled-select" >
+							<label class="control-label eb-label-text">来源单位</label>
+							<select  class="eb-select" v-model="req.ebdSrcEbrId">
+								<option value="" >全部</option>
+								<option :value="ebrView.ebrId" v-for="ebrView in ebrViewList" >{{ebrView.ebrName}}</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="input-group input-group-sm">
+							<div class="form-group">
+								<div class="input-group input-group-sm">
+									<label class="control-label eb-label-text">接收日期</label>
+									<input  class="input-date eb-input" readonly v-model="req.startReceiveTime" id="startReceiveTime" placeholder="yyyy-MM-dd"/>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="input-group input-group-sm">
+									<label class="control-label eb-date-label-text">至</label>
+									<input  class="input-date eb-input" readonly  v-model="req.endReceiveTime" id="endReceiveTime" placeholder="yyyy-MM-dd"/>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<button v-if="permissions['core:ebd:query']" class="eb-btn-search" type="button" onclick="reload()">
+							<i class="fa fa-search"></i> &nbsp; 查 询
+						</button>
+					</div>
+				</form>
+
+			</div>
+
+			<div class="jqGridDiv">
+				<div class="jqGridDiv2" >
+					<table id="jqGrid"></table>
+					<div id="jqGridPager" class="jqGridPager"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../js/common.js"></script>
+<script src="js/ebd.js"></script>
+</body>
+</html>

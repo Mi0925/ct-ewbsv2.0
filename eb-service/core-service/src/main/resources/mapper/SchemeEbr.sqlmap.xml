@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.core.main.scheme.mapper.SchemeEbrMapper">
+
+    <select id="getSchemeEbrListBySchemeId" resultType="cn.comtom.domain.core.scheme.info.SchemeEbrInfo" >
+        SELECT EBR.* ,
+        S.SCHEMETITLE AS schemeName,
+        V.EBRNAME AS ebrName,
+        A.AREANAME AS ebrAreaName,
+        V.EBRTYPENAME AS ebrTypeName
+        FROM BC_SCHEME_EBR EBR
+        LEFT JOIN BC_SCHEME S ON S.SCHEMEID = EBR.SCHEMEID
+        LEFT JOIN V_BC_EBR_INFO V ON  V.EBRID = EBR.EBRID
+        LEFT JOIN SYS_REGION_AREA A ON A.AREACODE = EBR.EBRAREA
+        WHERE 1=1
+        AND EBR.SchemeId = #{schemeId}
+
+    </select>
+
+</mapper>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+	<title>应急广播平台</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+	<link href="../common/css/eb-common.css" rel="stylesheet">
+	<link href="../common/css/eb-right-float.css" rel="stylesheet">
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" v-cloak >
+	<div class="main-content">
+		<div class="page-content" >
+
+			<div class="float-div" id="float-div">
+				<div class="right-float-div" style="width: 440px;">
+					<div class="left-sidebar" onclick="leftSidebarClick()"></div>
+
+					<div  class="detail-content" v-if="programInfo != null">
+						<div class="detail-head">
+							<div class="detail-title">
+								<div class="title-span" >
+									<i class="fa fa-home"></i>
+									{{msgTitle}}
+								</div>
+							</div>
+						</div>
+
+						<div class="detail-body">
+							<table>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 节目编号</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											{{programInfo.programId}}
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 基本信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text">
+												<label class="detail-text-label">语种代码：</label>
+												<div class="detail-text-content" >{{programInfo.languageCode}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">节目类型：</label>
+												<div class="detail-text-content">{{programInfo.programType | getEnumName('PROGRAM_TYPE_DICT')}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<div class="detail-text-label">发布机构：</div>
+												<div class="detail-text-content">{{programInfo.ebrName}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">节目级别：</label>
+												<div class="detail-text-content">{{programInfo.programLevel | getEnumName('PROGRAM_LEVEL_DICT') }}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">节目状态：</label>
+												<div class="detail-text-content">{{programInfo.state | getEnumName('PROGRAM_STATE_DICT')}}</div>
+											</div>
+
+											<div class="sub-detail-text">
+												<label class="detail-text-label">节目内容类型：</label>
+												<div class="detail-text-content">{{programInfo.contentType | getEnumName('PROGRAM_CONTENT_TYPE')}}</div>
+											</div>
+											<div class="sub-detail-text" v-show="programInfo.programType!=2">
+												<label class="detail-text-label">事件分类：</label>
+												<div class="detail-text-content">{{programInfo.ebmEventType | getEnumName('EVENT_TYPE_DICT') }}</div>
+											</div>
+											<div class="sub-detail-text" v-show="programInfo.programType!=2">
+												<div class="detail-text-label">事件描述：</div>
+												<div class="detail-text-content">
+													{{programInfo.ebmEventDesc}}
+												</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">创建人：</label>
+												<div class="detail-text-content">{{programInfo.createUser }}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">创建时间：</label>
+												<div class="detail-text-content">{{programInfo.createTime}}</div>
+											</div>
+											<div class="sub-detail-text">
+												<label class="detail-text-label">更新时间：</label>
+												<div class="detail-text-content">{{programInfo.updateTime}}</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 审核信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text">
+												<label class="detail-text-label">审核结果：</label>
+												<div class="detail-text-content">{{programInfo.auditResult | getEnumName('AUDIT_STATUS_DICT')}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="programInfo.auditResult != 0 ">
+												<label class="detail-text-label">审核意见：</label>
+												<div class="detail-text-content">{{programInfo.auditOpinion}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="programInfo.auditResult != 0 ">
+												<label class="detail-text-label">审核时间：</label>
+												<div class="detail-text-content">{{programInfo.auditTime}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="programInfo.auditResult != 0 ">
+												<label class="detail-text-label">审核人：</label>
+												<div class="detail-text-content">{{programInfo.auditUser}}</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+
+
+								<tr>
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 区域信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text" >
+												<label class="detail-text-label">覆盖区域：</label>
+												<div class="detail-text-content">{{areaNames}}</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr v-if="programInfo.contentType != '1' ">
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 文件信息</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div v-for="(file,index) in programInfo.filesList" class="sub-detail-text" >
+												<div class="detail-text-content div-hr">
+													<table  >
+														<tr>
+															<td >{{file.fileName}}</td>
+															<!--<td width="70px">
+																<a   @click="downFile(file.fileId)" style='color: #00fbff;cursor: pointer;'>下载</a>
+															</td>-->
+														</tr>
+													</table>
+												</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr v-if="programInfo.contentType == '1'">
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 节目内容</span>
+										</div>
+									</td>
+									<td>
+										<div class="detail-text">
+											<div class="sub-detail-text" v-if="programInfo.programContent!=null">
+												<span id="closeDesc">{{programInfo.programContent.content | filterDescFun(100)}}</span>
+												<span id="openDesc" style="display: none;">{{programInfo.programContent.content}}</span>
+												<a v-if="contentBtnShow" class="msgDesc-btn" onclick="msgDescBtnClick(this)">展开全部</a>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr v-if="programInfo.programStrategy != null ">
+									<td class="label-td">
+										<div class="detail-body-label">
+											<span> 节目策略</span>
+										</div>
+									</td>
+									<td>
+
+										<div class="detail-text">
+											<div class="sub-detail-text" >
+												<label class="detail-text-label">策略类型：</label>
+												<div class="detail-text-content">{{programInfo.programStrategy.strategyType | getEnumName('PROGRAM_STRATEGY_TYPE')}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="programInfo.programStrategy.strategyType == 1 ">
+												<label class="detail-text-label">播放日期：</label>
+												<div class="detail-text-content">{{programInfo.programStrategy.playTime}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="programInfo.programStrategy.strategyType == 2 ">
+												<label class="detail-text-label">开始日期：</label>
+												<div class="detail-text-content">{{programInfo.programStrategy.startTime}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="programInfo.programStrategy.strategyType == 2 ">
+												<label class="detail-text-label">结束日期：</label>
+												<div class="detail-text-content">{{programInfo.programStrategy.overTime}}</div>
+											</div>
+											<div class="sub-detail-text" v-if="programInfo.programStrategy.strategyType == 3">
+												<label class="detail-text-label">每周：</label>
+												<div class="detail-text-content" v-if="weeks != null && weeks.length > 0 ">
+													<span v-for="(week,index) in weeks">{{week}}</span>
+												</div>
+											</div>
+
+											<div class="sub-detail-text" v-if="programInfo.programStrategy.timeList != null">
+												<label class="detail-text-label">时间段：</label>
+												<div class="detail-text-content" v-for="(time,index) in programInfo.programStrategy.timeList">
+												    <span v-if="programInfo.programStrategy.strategyType == 4">
+														每月&nbsp;{{time.dayOfMonth}}&nbsp;日
+													</span>
+													<span v-if="time.durationTime == null || time.durationTime == '' ">
+														{{time.startTime}} &nbsp; - &nbsp; {{time.overTime}}
+													</span>
+													<span v-if="time.durationTime != null && time.durationTime != '' ">
+														从&nbsp;{{time.startTime}} &nbsp;开始，循环播放&nbsp; {{time.durationTime}}&nbsp; 次
+													</span>
+												</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+
+
+							</table>
+
+						</div>
+					</div>
+				</div>
+				<i class="fa fa-angle-double-right" style="width: 60px;height: 120px;"></i>
+			</div>
+
+
+			<div class="pull-right" id="searchDiv" style="width: 100%">
+				<form id="form-search-curve" class="form-inline" action="javascript:void(0);">
+
+					<div class="form-group">
+						<div class="input-group input-group-sm styled-select" >
+							<label class="control-label eb-label-text">选择日期</label>
+							<select  class="eb-select" v-model="req.playDate" onchange="onDateChange(this)">
+								<div v-if="dateList != null">
+									<option v-for="d in dateList"  v-bind:value="d.key">{{d.value}}</option>
+								</div>
+
+							</select>
+						</div>
+					</div>
+
+
+					<div class="form-group" style="float: right">
+                        <button v-if="auditShow"  class="eb-btn-search" style="width: 150px;margin-left: 0;" type="button" onclick="toAudit();">
+                            <i class="glyphicon glyphicon-check"></i> &nbsp; 节目单审核
+                        </button>
+                        <button class="eb-btn-search" v-if="commitBtnShow" style="width: 150px;margin-left: 0;" type="button" onclick="programUnitCommit();">
+                            <i class="glyphicon glyphicon-floppy-saved"></i> &nbsp; 节目单确认
+                        </button>
+						<button class="eb-btn-search" style="margin-left: 0;" type="button" onclick="reload()">
+							<i class="glyphicon glyphicon-repeat"></i> &nbsp; 刷  新
+						</button>
+
+
+					</div>
+
+				</form>
+
+			</div>
+
+			<br/>
+			<br/>
+			<br/>
+			<div class="jqGridDiv">
+				<div class="jqGridDiv2" >
+					<table id="jqGrid"></table>
+					<div id="jqGridPager" class="jqGridPager"></div>
+				</div>
+			</div>
+		</div>
+
+
+		<div  id="unitEditLayer" style="display: none;" class="eb-layer" >
+			<div class="eb-layer-title">
+				{{title}}
+			</div>
+			<form class="form-horizontal m-t" id="user_role_form" method="post" >
+				<input type="hidden"  v-model="programUnit.id" value="">
+				<div class="form-group mg-h-30">
+					<label class="col-sm-3 control-label eb-label-text"><span class="e-required"> *</span>开始时间：</label>
+					<div class="col-sm-8">
+						<input  v-model="programUnit.startTime" readonly id="startTime_edit" class="form-control eb-input-text" value="" >
+					</div>
+				</div>
+				<div class="form-group mg-h-30">
+					<label class="col-sm-3 control-label eb-label-text"><span class="e-required"> *</span>结束时间：</label>
+					<div class="col-sm-8">
+						<input  v-model="programUnit.endTime" readonly id="endTime_edit" class="form-control eb-input-text" value="" >
+					</div>
+				</div>
+				<div class="form-group mg-h-30">
+					<div class="col-sm-6 control-label eb-label-text">
+						<input type="button"  class="eb-btn-search" value="保存" @click="saveProgramUnit()">
+					</div>
+					<div class="col-sm-5">
+						<input type="button"  class="eb-btn-search" @click="closeLayer()" value="返回">
+					</div>
+				</div>
+			</form>
+
+		</div>
+
+        <div  id="unitAuditLayer" style="display: none;" class="eb-layer" >
+            <div class="eb-layer-title">
+                {{title}}
+            </div>
+            <form class="form-horizontal m-t" id="unitAuditLayer_form" method="post" >
+                <input type="hidden"  v-model="programUnit.id" value="">
+                <div class="form-group mg-h-30">
+                    <label class="col-sm-3 control-label eb-label-text"><span class="e-required"> *</span>审核结果：</label>
+                    <div class="col-sm-8">
+                        <select  class="eb-select" v-model="auditResult">
+                            <div v-if="pageEnum != null">
+                                <option v-for="p in pageEnum" v-if="p.dictGroupCode == 'AUDIT_STATUS_DICT'" v-bind:value="p.dictKey">{{p.dictValue}}</option>
+                            </div>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group mg-h-30">
+                    <label class="col-sm-3 control-label eb-label-text"><span class="e-required"> *</span>审核意见：</label>
+                    <div class="col-sm-8">
+                        <input  v-model="auditOpinion" id="auditOpinion" maxlength="100" class="form-control eb-input-text" value="" >
+                    </div>
+                </div>
+                <div class="form-group mg-h-30">
+                    <div class="col-sm-6 control-label eb-label-text">
+                        <input type="button"  class="eb-btn-search" value="确定" onclick="programUnitAudit()">
+                    </div>
+                    <div class="col-sm-5">
+                        <input type="button"  class="eb-btn-search" @click="closeLayer()" value="返回">
+                    </div>
+                </div>
+            </form>
+
+        </div>
+	</div>
+</div>
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../js/common.js"></script>
+<script src="js/programUnit.js"></script>
+</body>
+</html>

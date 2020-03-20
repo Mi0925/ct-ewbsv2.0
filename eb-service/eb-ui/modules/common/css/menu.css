@@ -1,0 +1,82 @@
+body{
+    background-color:transparent;
+}
+.menu-zone{
+    margin: 0 auto;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+}
+
+.parent-menu{
+   /* width: 510px;
+    height: 260px;*/
+    /*background:url("../img/menu-border.png") no-repeat ;
+    background-size: 100%;*/
+    margin: 19px;
+    float: left;
+    display: block;
+
+}
+.parent-menu-over{
+    background:url("../img/menu-border.png") no-repeat ;
+    background-size: 100%;
+    display: none;
+}
+
+.parent-menu div{
+   /* background:rgba(255,255,255,0.3);*/
+}
+.menu-panel{
+   /* min-height: 1000px;*/
+    /* width: 1650px; */
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+
+}
+.sub-menus{
+    margin: 25px ;
+    display: none;
+    overflow: hidden;
+}
+.sub-menus-over{
+    margin: 25px ;
+}
+.sub-menu{
+   /* width: 140px;
+    height: 50px;
+    line-height: 50px;*/
+    float: left;
+    margin: 5px;
+    text-align: center;
+    color: #1cc09f;
+    cursor: pointer;
+    background:url("../img/sub-menu-border.png") no-repeat ;
+    background-size: 100% 100%;
+}
+.sub-menu:hover{
+    background:url("../img/sub-menu-border-sel.png") no-repeat ;
+    background-size: 100% 100%;
+}
+.img-menu{
+    display: block;
+}
+.img-menu img{
+
+}
+.parent-menu:hover{
+    background:url("../img/menu-border.png") no-repeat ;
+    background-size: 100% 100%;
+}
+.parent-menu:hover > .img-menu{
+    position: absolute;
+    z-index: -1;
+    filter:opacity(10);
+    opacity: 0.1;
+    /*display: none;*/
+}
+
+.parent-menu:hover > .sub-menus{
+    display: block;
+}

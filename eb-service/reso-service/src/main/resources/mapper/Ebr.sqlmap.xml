@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.reso.main.ebr.mapper.EbrPlatformMapper">
+
+    <select id="getEbrInfoById"  resultType="cn.comtom.domain.reso.ebr.info.EbrInfo">
+        SELECT
+            ebr.*
+        FROM
+            (
+                SELECT
+                    B.areaCode,
+                    B.bsEbrId AS ebrId,
+                    b.bsName AS ebrName,
+                    b.bsState AS ebrState,
+                    b.subResType AS ebrType,
+                    b.bsUrl AS ebrUrl,
+                    b.createTime,
+                    b.latitude,
+                    b.longitude,
+                    b.population,
+                    b.square,
+                    b.updateTime
+                FROM
+                    bc_ebr_broadcast B
+                UNION ALL
+                    SELECT
+                        p.areaCode,
+                        p.psEbrId AS ebrId,
+                        p.psEbrName AS ebrName,
+                        p.psState AS ebrState,
+                        p.subResType AS ebrType,
+                        p.psUrl AS ebrUrl,
+                        p.createTime,
+                        p.latitude,
+                        p.longitude,
+                        p.population,
+                        p.square,
+                        p.updateTime
+                    FROM
+                        bc_ebr_platform p
+                  UNION ALL
+                    SELECT
+					    a.areaCode AS areaCode,
+                        a.ebrAsId AS ebrId,
+                        a.ebrAsName AS ebrName,
+                        a.adapterState AS ebrState,
+                        a.subResType AS ebrType,
+                        a.url AS ebrUrl,
+                        a.createTime,
+                        a.latitude,
+                        a.longitude,
+                        '' AS population,
+                        '' AS square,
+                        a.updateTime
+                    FROM
+                        bc_ebr_adapter a
+                 UNION ALL
+                    SELECT
+					    s.areaCode AS areaCode,
+                        s.ebrStId AS ebrId,
+                        s.ebrStName AS ebrName,
+                        s.stationState AS ebrState,
+                        s.subResType AS ebrType,
+                        s.address AS ebrUrl,
+                        s.createTime,
+                        s.latitude,
+                        s.longitude,
+                        '' AS population,
+                        '' AS square,
+                        s.updateTime
+                    FROM
+                        bc_ebr_station s
+                    
+            ) ebr
+        WHERE
+            1 = 1
+        AND ebr.ebrId = #{ebrId}
+    </select>
+
+    <select id="getEbrPlatfromInfoListWithXML"  resultType="cn.comtom.domain.reso.ebr.info.EbrPlatformInfo" parameterType="cn.comtom.domain.reso.ebr.request.EbrPlatformPageRequest">
+    SELECT
+    P.*,R.AREANAME
+    FROM BC_EBR_PLATFORM P
+    LEFT JOIN SYS_REGION R ON R.AREACODE = P.AREACODE
+    WHERE 1=1
+    <if test="psEbrName != null and psEbrName != ''">
+        and p.psEbrName like CONCAT('%', #{psEbrName}, '%')
+    </if>
+    <if test="psType != null and psType != ''">
+        and p.psType = #{psType}
+    </if>
+    <if test="platLevel != null and platLevel != ''">
+        and p.platLevel = #{platLevel}
+    </if>
+    <if test="psState != null and psState != ''">
+        and p.psState = #{psState}
+    </if>
+    <if test="areaCode != null and areaCode != ''">
+        and p.areaCode = #{areaCode}
+    </if>
+    <if test="parentAreaCode != null and parentAreaCode != ''">
+        and exists (select 1 from sys_region_area a where a.parentAreaCode like CONCAT(#{parentAreaCode}, '%') and a.areaCode = p.areaCode)
+    </if>
+    <if test="childAreaCode != null and childAreaCode != ''">
+        and p.areaCode = (select r.parentAreaCode from sys_region r where r.areaCode=#{childAreaCode} )
+    </if>
+    <if test="areaCodes != null">
+        and p.areaCode  in
+        <foreach collection="areaCodes" open="(" close=")" separator="," item="code" index="index">
+             #{code}
+        </foreach>
+    </if>
+    <if test="parentPsEbrId != null and parentPsEbrId != ''">
+        and p.parentPsEbrId = #{parentPsEbrId}
+    </if>
+    <if test="psEbrId != null and psEbrId != ''">
+            and p.psEbrId = #{psEbrId}
+    </if>
+    </select>
+
+	<select id="getAllCount" parameterType="map"  resultType="int" statementType="STATEMENT">
+          select count(1) from ${tableName}
+    </select>
+    
+    <select id="getNormalCount" parameterType="map"  resultType="int" statementType="STATEMENT">
+          select count(1) from ${tableName}  where ${fieldName} = '1'
+    </select>
+
+</mapper>

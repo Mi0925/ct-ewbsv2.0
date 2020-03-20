@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+<title>应急广播平台-区域管理</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../plugins/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link href="../common/css/eb-common.css" rel="stylesheet">
+<link href="../common/css/eb-right-float.css" rel="stylesheet">
+<link href="../../plugins/ztree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+</head>
+<body >
+<div class="main-container container-fluid" id="rrapp" >
+	<div class="main-content" >
+		<div class="page-content"  >
+			
+			<!-- 覆盖区域 -->
+						<div  id="flow-detail-2" class="flow-detail-content" >
+							<div class="form-horizontal m-t program-detail-editor" id="area_info"  >
+								<div class="form-group ">
+									<div style="width: 20%;float: left">
+										<div class="form-group ">
+											<label class="col-sm-5 control-label eb-label-text">待选区域</label>
+										</div>
+										<div class="form-group ">
+											<div class="col-sm-8">
+												<div class="area-div">
+													<div class="area-iframe ztree" id="areaTree"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div style="width: 50%;margin-top:100px;float: left">
+										<div class="form-group ">
+										        <input type="hidden" name="id" id="areanodeId">
+										        <input type="hidden" name="parentAreaCode" id="parentAreaCode">
+										        <input type="hidden" name="areaLevel" id="areaLevel">
+												<label class="col-sm-2 control-label eb-label-text">区域名称：</label>
+												<div class="col-sm-3">
+													<input id="areaName"  class="form-control eb-input-text" type="text" value="">
+												</div>
+												<label class="col-sm-2 control-label eb-label-text">区域编码：</label>
+												<div class="col-sm-3">
+													<input id="areaCode"  class="form-control eb-input-text" type="text" value="">
+												</div>
+												<div class="form-group mg-h-30" style="text-align: center">
+												<div class="form-group mg-h-30"></div>
+								<div class="form-group mg-h-30" style="text-align: center">
+								<button class="eb-btn-search" type="button" onclick="btnCancelZtree()">
+									 &nbsp; 取消
+								</button>
+								<button class="eb-btn-search" type="button" onclick="btnSaveZtree2()">
+									&nbsp; 确定修改
+								</button>
+								</div>
+							</div>
+										</div>
+									</div>
+								</div>
+						</div>
+							</div>
+							<!-- <div class="form-group mg-h-30" style="text-align: center">
+								<button class="eb-btn-search" type="button" onclick="next(1)">
+									<i class="glyphicon glyphicon-arrow-left"></i> &nbsp; 取消
+								</button>
+								<button class="eb-btn-search" type="button" onclick="next(3)">
+									<i class="glyphicon glyphicon-arrow-right"></i> &nbsp; 确定
+								</button>
+							</div> -->
+						</div>
+
+
+		</div>
+
+
+	</div>
+
+
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/vue/vue.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/laydate/laydate.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../js/common.js"></script>
+<script src="js/areaCode.js"></script>
+<script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+</body>
+</html>

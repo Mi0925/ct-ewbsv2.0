@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.reso.main.ebr.mapper.EbrBroadcastMapper">
+
+
+
+    <select id="getListWithXML"  resultType="cn.comtom.domain.reso.ebr.info.EbrBroadcastInfo" parameterType="cn.comtom.domain.reso.ebr.request.BroadcastPageRequest">
+    SELECT
+    P.*,R.AREANAME as areaName,pl.psEbrName as relatePsName
+    FROM bc_ebr_broadcast P
+    LEFT JOIN SYS_REGION R ON R.AREACODE = P.AREACODE
+    left join bc_ebr_platform pl on pl.psEbrId = p.relatedPsEbrId
+    WHERE 1=1
+    <if test="bsName != null and bsName != ''">
+        and p.bsName like CONCAT('%', #{bsName}, '%')
+    </if>
+        <if test="bsEbrId != null and bsEbrId != ''">
+            and p.bsEbrId = #{bsEbrId}
+        </if>
+        <if test="bsType != null and bsType != ''">
+        and p.bsType = #{bsType}
+    </if>
+    <if test="syncFlag != null and syncFlag != ''">
+        and p.syncFlag = #{syncFlag}
+    </if>
+    <if test="statusSyncFlag != null and statusSyncFlag != ''">
+        and p.statusSyncFlag = #{statusSyncFlag}
+    </if>
+    <if test="bsState != null and bsState != ''">
+        and p.bsState = #{bsState}
+    </if>
+    <if test="areaCode != null and areaCode != ''">
+        and p.areaCode = #{areaCode}
+    </if>
+    <if test="areaCodes != null">
+        and p.areaCode  in
+        <foreach collection="areaCodes" open="(" close=")" separator="," item="code" index="index">
+             #{code}
+        </foreach>
+    </if>
+    <if test="parentAreaCode != null and parentAreaCode != ''">
+        and exists (select 1 from sys_region_area a where a.parentAreaCode like CONCAT(#{parentAreaCode}, '%') and a.areaCode = p.areaCode)
+    </if>
+    <if test="childAreaCode != null and childAreaCode != ''">
+        and p.areaCode = (select r.parentAreaCode from sys_region r where r.areaCode=#{childAreaCode} )
+    </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,136 @@
+.float-div{
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    float: right;
+    pointer-events:none;
+}
+.right-float-div{
+    background: url("../img/detail-border.png") no-repeat;
+    -moz-background-size:100% 100%;
+    background-size:100% 100%;
+    /*width: 514px;*/
+    height: 100%;
+    float: right;
+    pointer-events:auto;
+}
+.left-sidebar{
+    width: 34px;
+    height: 100%;
+    background: url("../img/siderbar-in.png") no-repeat;
+    float: left;
+    cursor: pointer;
+}
+.detail-content{
+    width: calc(100% - 34px);
+    height: 100%;
+    float: left;
+
+}
+.detail-head{
+    width: 100%;
+    height: 80px;
+    text-align: center;
+    border-bottom:rgba(71,255,255,0.3) solid 1px ;
+}
+.detail-body{
+    width: 100%;
+    height: 85%;
+    margin-top: 15px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.detail-body table{
+    width: 90%;
+    border-collapse:separate;
+    border-spacing:0 2px;
+}
+.detail-body .label-td{
+    width: 120px;
+    background: rgba(1,158,255,0.32);
+}
+.detail-body-label{
+    width: 100%;
+    height: 100%;
+    float: left;
+    text-align: center;
+    font-size: 16px;
+    color: #ffffff;
+    font-family: "Microsoft YaHei";
+}
+.detail-text{
+    padding: 10px;
+    float: left;
+    width: 100%;
+    height: 100%;
+    font-size: 14px;
+    color: #00ffff;
+    font-family: "Microsoft YaHei";
+}
+hr{
+    background: rgba(71,255,255,0.3);
+    margin: 0;
+    width: 100%;
+}
+.detail-body-row{
+    float: left;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+
+.title-span{
+    font-size: 18px;
+    color: #ffffff;
+    /*max-width: 240px;*/
+    overflow: hidden;
+    height: 30px;
+    line-height: 30px;
+    font-family: "Microsoft YaHei";
+}
+.detail-btn-group{
+    width: 40%;
+    float: left;
+    margin-top: 26px;
+    height: 40px;
+    line-height: 40px;
+}
+.detail-title{
+    width: 60%;
+    float: left;
+    margin-top: 26px;
+    height: 40px;
+    line-height: 40px;
+    text-align: left;
+}
+.detail-btn{
+    float: right;
+    margin-left: 10px;
+    width: 65%;
+    height: 90%;
+    line-height: 36px;
+    color: #00ffff;
+    background:  url("../img/btn-border-140.png") no-repeat;
+    background-size: 100%;
+    cursor: pointer;
+    margin-right: 26px;
+}
+
+.detail-text-label{
+    text-align: right;
+    float: left;
+}
+.detail-text-content{
+    text-align: left;
+    min-width: 220px;
+}
+.sub-detail-text{
+    clear: both;
+    margin-top: 5px;
+}
+.div-hr{
+ border-bottom:rgba(71,255,255,0.3) solid 1px ;
+ margin-left: 10px;
+}

@@ -1,0 +1,123 @@
+html{
+    height: 100%;
+}
+
+.login-main{
+    margin: 0;
+    background:url("../img/login-background.png") no-repeat center ;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    height: auto;
+    overflow: hidden;
+    text-align: center;
+}
+.login-panel{
+    text-align: center;
+    margin: auto;
+    background:url("../img/guangquan.png") no-repeat center ;
+    padding: 10% ;
+}
+
+.login-blank{
+    text-align: center;
+    background:url("../img/denglukuang.png") no-repeat center ;
+    width: 500px;
+    height: 600px;
+    margin: auto;
+}
+.login-zone{
+    width: 500px;
+}
+.login-input-zone{
+    width: 400px;
+    height: 600px;
+    margin-left: 50px;
+    padding-top: 25px;
+}
+.login-title{
+    text-align: center;
+    height: 18%;
+    color: white;
+}
+.login-input{
+    height: 60px;
+    width: 366px;
+    margin: 30px auto;
+    color: white;
+    background:url("../img/yonghuming.png") no-repeat  ;
+    text-align: center;
+}
+.login-input i{
+    width: 60px;
+    height: 60px;
+    float: left;
+    color: white;
+    text-align: center;
+    line-height: 60px;
+    font-size: 20px;
+}
+
+ .uname {
+    height: 60px;
+    background-color: rgb(6,107,165);
+    width: 275px;
+    border: 0;
+}
+
+
+.yanzhenma{
+    height: 60px;
+    line-height: 50px;
+    width: 208px;
+    border: 0;
+    float: left;
+    text-align: center;
+    background:url("../img/yanzhengma.png") no-repeat  ;
+}
+.login-yzm{
+    height: 60px;
+    width: 366px;
+    margin: 30px auto;
+    color: white;
+}
+.yanzhenma-span{
+    height: 58px;
+    width: 120px;
+    float: right;
+    background-color: white;
+}
+yanzhenma-span img{
+    height: 100%;
+    width: 100%;
+}
+.login-btn{
+    width: 375px;
+    height: 68px;
+    background: url("../img/dianjidenglu.png") no-repeat  ;
+    background-size: 100% 100%;
+    border: 0;
+    margin: auto;
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 68px;
+    cursor: pointer;
+}
+.line-img{
+    float: left;
+    margin-top: 4px;
+}
+#error_msg_div{
+    width: 366px;
+    text-align: left;
+    margin-left: 20px;
+    margin-bottom: 15px;
+    display: none;
+}
+#errorMsg{
+    color: red;
+    font-size: 15px;
+    font-weight: 900;
+}

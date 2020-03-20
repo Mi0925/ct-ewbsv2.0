@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.comtom.reso.main.file.mapper.FileMapper">
+
+
+
+    <select id="getListFromXml"  resultType="cn.comtom.domain.reso.file.info.FileInfo" parameterType="cn.comtom.domain.reso.file.request.FilePageRequest">
+        select f.*,l.libName as libName from bc_file_info f
+        LEFT JOIN bc_file_library l on  l.libId = f.libId
+        where 1=1
+        <if test="originName != null and originName != ''">
+            and f.originName like CONCAT('%',#{originName}, '%')
+        </if>
+
+        <if test="libId != null and libId != ''">
+            and f.libId =#{libId}
+        </if>
+        <if test="md5Code != null and md5Code != ''">
+            and f.md5Code =#{md5Code}
+        </if>
+        <if test="fileType != null and fileType != ''">
+            and f.fileType =#{fileType}
+        </if>
+        <if test="auditState != null and auditState != ''">
+            and f.auditState =#{auditState}
+        </if>
+        <if test="fileExt != null and fileExt != ''">
+            and f.fileExt =#{fileExt}
+        </if>
+
+    </select>
+
+
+</mapper>
